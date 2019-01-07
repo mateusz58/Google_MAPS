@@ -35,7 +35,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.vision.barcode.Barcode;
+//import com.google.android.gms.vision.barcode.Barcode;
 import com.magnet.android.mms.async.Call;
 
 import java.io.IOException;
@@ -47,7 +47,7 @@ public class Mapfragment extends Fragment implements GoogleApiClient.ConnectionC
 
     private final String TAG = "Mapfragment";
     Geocoder coder;
-    Barcode.GeoPoint p;
+    //Barcode.GeoPoint p;
     private double latitude;
     private double longitude;
     MapView mapView;
@@ -92,7 +92,6 @@ public class Mapfragment extends Fragment implements GoogleApiClient.ConnectionC
                 markerList.add(temp);
 
             }
-
 
         }
         map.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {

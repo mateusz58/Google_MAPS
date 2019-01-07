@@ -8,7 +8,6 @@ import java.util.Date;
 public class Parking_reservationsResult {
 
     String ID_uzytkownika;
-
     Date    Od;
     String  getNumer_rejestracji;
     Date  TheDo;
