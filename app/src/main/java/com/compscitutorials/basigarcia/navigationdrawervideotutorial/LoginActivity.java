@@ -36,22 +36,41 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.Parking_models.Users;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.FactoryAPI;
-import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.FactoryAPIFactory;
-import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.beans.UsersResult;
-import com.magnet.android.mms.MagnetMobileClient;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.network.API_Service;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.network.Authentication_Service;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.network.Parking_Service;
 import com.magnet.android.mms.async.Call;
 import com.magnet.android.mms.exception.SchemaException;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import butterknife.InjectView;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
 public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
+
+    public static String token;
 
     private FactoryAPI factoryAPI;
     public final String TAG="LoginActivity";
@@ -313,53 +332,63 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         }
         @Override
         protected Boolean doInBackground(Void... params) {
-Boolean results=false;
+
+            Log.w(TAG, "doInBackground:Initiated ");
+
+            Log.i(TAG, "doInBackground: login "+mEmail);
+            Log.i(TAG, "doInBackground: password "+mPassword);
+            String TXTEMAIL=mEmail.replaceAll("[\\s()]+","");
+            String TXTPASSWORD=mPassword.replaceAll("[\\s()]+","");
+
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpPost httppost = new HttpPost("http://192.168.8.104:8000/api-token-auth/");
+
             try {
-                MagnetMobileClient magnetClient = MagnetMobileClient.getInstance(getApplicationContext());
-                FactoryAPIFactory controllerFactory = new FactoryAPIFactory(magnetClient);
-                try {
-                    factoryAPI = controllerFactory.obtainInstance();
-                    Call<List<UsersResult>> callObject = factoryAPI.getUsers(null);
-                    List<UsersResult> result = callObject.get();
-                    Log.i(TAG, "doInBackground: login "+mEmail);
-                    Log.i(TAG, "doInBackground: password "+mPassword);
-                    String TXTEMAIL=mEmail.replaceAll("[\\s()]+","");
-                    String TXTPASSWORD=mPassword.replaceAll("[\\s()]+","");
-                    for (int i = 0; i <result.size() ; i++) {
+                // Add your data
+                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+                nameValuePairs.add(new BasicNameValuePair("username", TXTEMAIL));
+                nameValuePairs.add(new BasicNameValuePair("password", TXTPASSWORD));
+                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
-                        String PASS=result.get(i).getPassword().replaceAll("[\\s()]+","");
-                        String LOG=result.get(i).getLogin().replaceAll("[\\s()]+","");
-                        Log.i(TAG, "testGetUsers  Password:"+PASS+"s");
-                        Log.i(TAG, "testGetUsers  Login: "+LOG+"s");
+                // Execute HTTP Post Request
+                HttpResponse response = httpclient.execute(httppost);
+                StatusLine statusLine = response.getStatusLine();
+                String responseBody = EntityUtils.toString(response.getEntity());
+                int code = response.getStatusLine().getStatusCode();
 
 
-                        if( TXTEMAIL.equals(LOG) && TXTPASSWORD.equals(PASS)){
 
-                            Log.i(TAG, "Logging succesfull");
-                            myUser.setUserId(result.get(i).getID());
-                            Log.i(TAG, "Set user id:"+myUser.getUserId());
-                             results=true;
 
-                        }
-                    }
-                } catch (SchemaException e) {
-                    Log.i("RESPONSE","Connection problem"+e.getMessage());
-                } catch (InterruptedException e) {
-                    Log.i("RESPONSE","Connection problem"+e.getMessage());
-                } catch (ExecutionException e) {
-                    Log.i("RESPONSE","Connection problem"+e.getMessage());
+                responseBody=  responseBody.replaceAll("\"" , "" );
+                responseBody = responseBody.replaceAll("\\{", "");
+                responseBody = responseBody.replaceAll("\\}", "");
+                responseBody = responseBody.replaceAll("token:", "");
 
-                }
-            } catch (Exception e) {
-                Log.i("RESPONSE","Connection problem");
-                Toast.makeText(LoginActivity.this, R.string.internet_error, Toast.LENGTH_SHORT).show();
+
+                token=responseBody;
+
+                HttpEntity entity = response.getEntity();
+
+                Log.w(TAG, "doInBackground:Retrofit mobile client Response Code: "+responseBody);
+                Log.w(TAG, "doInBackground:Retrofit mobile client Response Code: "+statusLine.getStatusCode());
+
+
+
+
+            } catch (ClientProtocolException e) {
+                Log.e(TAG, "doInBackground:Retrofit mobile client Response Code: "+e.toString());
+            } catch (IOException e) {
+                Log.e(TAG, "doInBackground:Retrofit mobile client Response Code: "+e.toString());
             }
-            finally {
 
-                return results;
 
-            }
-            }
+
+
+            Boolean results = false;
+
+
+    return true;
+        }
 
 
         @Override
