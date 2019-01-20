@@ -70,7 +70,7 @@ import static android.Manifest.permission.READ_CONTACTS;
 
 public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
-    public static String token;
+    public static String token="none";
 
     private FactoryAPI factoryAPI;
     public final String TAG="LoginActivity";
@@ -161,15 +161,12 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         if (mAuthTask != null) {
             return;
         }
-
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
-
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
-
         boolean cancel = false;
         View focusView = null;
 
@@ -212,7 +209,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
     private boolean isPasswordValid(String password) {
 
-        return password.length() > 4;
+        return password.length() > 8;
     }  //Sprawdzanie poprawnosci formatu
 
     /**
@@ -339,10 +336,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             Log.i(TAG, "doInBackground: password "+mPassword);
             String TXTEMAIL=mEmail.replaceAll("[\\s()]+","");
             String TXTPASSWORD=mPassword.replaceAll("[\\s()]+","");
-
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httppost = new HttpPost("http://192.168.8.104:8000/api-token-auth/");
-
             try {
                 // Add your data
                 List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
@@ -354,25 +349,18 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                 HttpResponse response = httpclient.execute(httppost);
                 StatusLine statusLine = response.getStatusLine();
                 String responseBody = EntityUtils.toString(response.getEntity());
-                int code = response.getStatusLine().getStatusCode();
+                if(statusLine.getStatusCode()==200) {
+                    responseBody = responseBody.replaceAll("\"", "");
+                    responseBody = responseBody.replaceAll("\\{", "");
+                    responseBody = responseBody.replaceAll("\\}", "");
+                    responseBody = responseBody.replaceAll("token:", "");
+                    token=responseBody;
+                    Log.w(TAG, "doInBackground:Retrofit mobile client received Token: "+responseBody);
+                    Log.w(TAG, "doInBackground:Retrofit mobile client Response Code: "+statusLine.getStatusCode());
+                }
 
 
-
-
-                responseBody=  responseBody.replaceAll("\"" , "" );
-                responseBody = responseBody.replaceAll("\\{", "");
-                responseBody = responseBody.replaceAll("\\}", "");
-                responseBody = responseBody.replaceAll("token:", "");
-
-
-                token=responseBody;
-
-                HttpEntity entity = response.getEntity();
-
-                Log.w(TAG, "doInBackground:Retrofit mobile client Response Code: "+responseBody);
                 Log.w(TAG, "doInBackground:Retrofit mobile client Response Code: "+statusLine.getStatusCode());
-
-
 
 
             } catch (ClientProtocolException e) {
@@ -398,9 +386,9 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
             if (success) {
 
-                if ((myUser.userId > 0)) {
+                if ((token!="none")) {
                     Log.i("RESPONSE", "Successful login");
-                    API.userid = myUser.getUserId().toString();
+//                    API.userid = myUser.getUserId().toString();
                     finish();
                     Intent myIntent = new Intent(LoginActivity.this, SplashScreen.class);
                     LoginActivity.this.startActivity(myIntent);
@@ -415,9 +403,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
                                     Intent myIntent = new Intent(LoginActivity.this, SignupActivity.class);
                                     LoginActivity.this.startActivity(myIntent);
-
                                 }
-
                                 break;
 
                                 case DialogInterface.BUTTON_NEGATIVE:

@@ -86,8 +86,6 @@ public class MainActivity extends AppCompatActivity
 //                            content += "User ID: " + data.getUser() + "\n";
                             content += "Parking name: " + data.getparking_name() + "\n";
 //                            content += "Registration plate: " + data.getRegistrationPlate() + "\n\n";
-
-
                             Log.w(TAG, "doInBackground:Retrofit mobile client  JSON: "+content);
                         }
                     }
@@ -268,6 +266,7 @@ public class MainActivity extends AppCompatActivity
             fragmentTransaction.commit();
         } else if (id == R.id.nav_logout) {///przejscie do RestFramgnet
             API.userid="0";
+            LoginActivity.token="none";
             Intent myIntent = new Intent(this,LoginActivity.class);
             this.startActivity(myIntent);//to jest wazne
         } else if (id == R.id.nav_tools) {
