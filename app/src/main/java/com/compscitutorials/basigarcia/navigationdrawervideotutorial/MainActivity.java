@@ -1,14 +1,9 @@
 package com.compscitutorials.basigarcia.navigationdrawervideotutorial;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
@@ -23,21 +18,33 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+//import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.FactoryAPI;
+//import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.FactoryAPIFactory;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.Parking_models.Booking;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.Parking_models.Parking;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.Parking_models.Parking_builder;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.Test.Employee;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.Test.EmployeeList;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.Test.Post;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.Test.parking_wsp;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.FactoryAPI;
-import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.FactoryAPIFactory;
-import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.beans._ParkingsResult;
-import com.magnet.android.mms.MagnetMobileClient;
-import com.magnet.android.mms.async.Call;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.FactoryAPI_Retrofit;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.network.JsonPlaceHolderApi;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.network.RetrofitInstance;
+//import com.magnet.android.mms.MagnetMobileClient;
+//import com.magnet.android.mms.async.Call;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -45,6 +52,11 @@ public class MainActivity extends AppCompatActivity
 
     private final String TAG="MainActivity";
     public static FactoryAPI Parking_list;
+
+
+    public static FactoryAPI_Retrofit Parking_list_v_retrofit;
+
+     public static  JsonPlaceHolderApi service;
 
 
     NavigationView navigationView = null;
@@ -55,7 +67,7 @@ public class MainActivity extends AppCompatActivity
 
     final int PERMISSION_READ_STATE=1;
 
-    final String url="http://polar-plains-14145.herokuapp.com/parks_wsp";
+    final String url="http://polar-plains-14145.herokuapp.com/parks/";
 
 
     class GetParking extends AsyncTask<Void, Void, String> {
@@ -65,7 +77,85 @@ public class MainActivity extends AppCompatActivity
             String out = "0";
             try {
 
-//                Log.w(TAG, "doInBackground:Magnet mobile client initialization ");
+                Log.w(TAG, "doInBackground:Retrofit mobile client initialization ");
+                service = RetrofitInstance.getRetrofitInstance().create(JsonPlaceHolderApi.class);
+//                Call<EmployeeList> call = service.getEmployeeData(100);
+
+                Call<List<Parking_builder>> call = service.getParking();
+
+
+
+                call.enqueue(new Callback<List<Parking_builder>>() {
+                    @Override
+                    public void onResponse(Call<List<Parking_builder>> call, Response<List<Parking_builder>> response) {
+
+                        if (!response.isSuccessful()) {
+                            Log.w(TAG, "doInBackground:Retrofit mobile client Response Code: "+response.code());
+                            Log.w(TAG, "doInBackground:Retrofit mobile client Response message: "+response.message());
+                            return;
+                        }
+
+                        List<Parking_builder> datas = response.body();
+
+                        for (Parking_builder data : datas) {
+                            String content = "";
+                            content += "id: " + data.getid() + "\n";
+//                            content += "User ID: " + data.getUser() + "\n";
+                            content += "Parking name: " + data.getparking_name() + "\n";
+//                            content += "Registration plate: " + data.getRegistrationPlate() + "\n\n";
+
+
+                            Log.w(TAG, "doInBackground:Retrofit mobile client  JSON: "+content);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<Parking_builder>> call, Throwable t) {
+
+                        Log.w(TAG, "doInBackground:Retrofit mobile client Failure JS: "+t.getMessage());
+                    }
+                });
+
+//                retrofit = new Retrofit.Builder()
+//                        // adres API
+//                        .setEndpoint("http://damianchodorek.com/")
+//                        // niech Retrofit loguje wszystko co robi
+//                        .setLogLevel(Retrofit.LogLevel.FULL)
+//                        .build();
+
+// ///////  WERSJA Z RETROFITT
+//
+//         Retrofit retrofit = new Retrofit.Builder()
+//                        .baseUrl(url)
+//        .addConverterFactory(GsonConverterFactory.create())
+//                        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+//                        .build();
+//                ApiService apiService = retrofit.create(ApiService.class);
+//// make a request by calling the corresponding method
+//
+//                Single<_ParkingsResult> result = apiService.getParkingData(ID);
+//                result.subscribeOn(Schedulers.io())
+//                        .observeOn(AndroidSchedulers.mainThread())
+//                        .subscribe(new SingleObserver<_ParkingsResult>() {
+//                            @Override
+//                            public void onSubscribe(Disposable d) {
+//                                Log.w(TAG, "doInBackground:Retrofit mobile client onSubscribe ");
+//                            }
+//
+//                            @Override
+//                            public void onSuccess(_ParkingsResult person) {
+//                                Log.w(TAG, "doInBackground:Retrofit mobile client success ");
+//                            }
+//                            @Override
+//                            public void onError(Throwable e) {
+//                                Log.w(TAG, "doInBackground:Retrofit mobile client error"+e.getMessage());
+//                            }
+//
+//                        });
+
+
+         //WERSJA Z
+
 //                MagnetMobileClient magnetClient = MagnetMobileClient.getInstance(getApplicationContext());
 //                FactoryAPIFactory controllerFactory = new FactoryAPIFactory(magnetClient);
 //
@@ -74,11 +164,6 @@ public class MainActivity extends AppCompatActivity
 //                List<_ParkingsResult> result = callObject.get();
 //                out="1";
 
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(url)
-        .addConverterFactory(GsonConverterFactory.create())
-                        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                        .build();
 
 
 
@@ -89,7 +174,7 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(MainActivity.this, R.string.internet_error, Toast.LENGTH_SHORT).show();
             } finally {
 
-                Log.i(TAG, "doInBackground:out value"+out);
+//                Log.i(TAG, "doInBackground:out value"+out);
 
 
                 return out;
@@ -185,7 +270,7 @@ public class MainActivity extends AppCompatActivity
 
 
               }
-              //new GetParking().execute();
+              new GetParking().execute();
               Mapfragment fragment = new Mapfragment();
 
               android.support.v4.app.FragmentTransaction fragmentTransaction =

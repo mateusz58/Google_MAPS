@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.Parking_models.Parking_builder;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.beans._ParkingsResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -42,6 +43,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Vector;
 
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import static com.compscitutorials.basigarcia.navigationdrawervideotutorial.MainActivity.service;
+
 public class Mapfragment extends Fragment implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,View.OnClickListener,SearchView.OnQueryTextListener,GoogleMap.OnMarkerClickListener {
 
@@ -57,37 +63,69 @@ public class Mapfragment extends Fragment implements GoogleApiClient.ConnectionC
     Location mLastLocation;
     GoogleApiClient mGoogleApiClient;
     private Button btnShowLocation;
-
+    private List<Parking_builder> result;
 
 
     private void getParkings() throws Exception {
         Marker temp;
-        Call<List<_ParkingsResult>> callObject = MainActivity.Parking_list.get_Parkings(null);
-        List<_ParkingsResult> result = callObject.get();
+//        Call<List<_ParkingsResult>> callObject = MainActivity.Parking_list.get_Parkings(null);
+//        List<_ParkingsResult> result = callObject.get();
+
+        retrofit2.Call<List<Parking_builder>> call = service.getParking();
+        service.getParking();
+        call.enqueue(new Callback<List<Parking_builder>>() {
+            @Override
+            public void onResponse(retrofit2.Call<List<Parking_builder>> call, Response<List<Parking_builder>> response) {
+
+                if (!response.isSuccessful()) {
+                    Log.w(TAG, "doInBackground:Retrofit mobile client Response Code: "+response.code());
+                    Log.w(TAG, "doInBackground:Retrofit mobile client Response message: "+response.message());
+                    return;
+                }
+                List<Parking_builder> datas = response.body();
+                result=datas;
+                for (Parking_builder data : datas) {
+                    String content = "";
+                    content += "id: " + data.getid() + "\n";
+//                            content += "User ID: " + data.getUser() + "\n";
+                    content += "Parking name: " + data.getparking_name() + "\n";
+//                            content += "Registration plate: " + data.getRegistrationPlate() + "\n\n";
+                    Log.w(TAG, "doInBackground:Retrofit mobile client  JSON: "+content);
+                }
+            }
+            @Override
+            public void onFailure(retrofit2.Call<List<Parking_builder>> call, Throwable t)
+            {
+
+                Log.w(TAG, "doInBackground:Retrofit mobile client Failure JS: "+t.getMessage());
+            }
+        });
+
+
         Geocoder gc = new Geocoder(getActivity());
         Log.i(TAG, "getParkings:started");
         for (int i = 1; i < result.size(); i++) {
 
 
             Log.i(TAG, "getParkings X:"+result.get(i).getX().toString());
-            Log.i(TAG, "getParkings ilosc miejsc:"+result.get(i).getIloscmiejsc().toString());
+            Log.i(TAG, "getParkings ilosc miejsc:"+result.get(i).getfree_places().toString());
 
 
-            String miasto=result.get(i).getMiasto();
-            String Ulica=result.get(i).getUlica();
-            String nr_ulicty=result.get(i).getNr_ulicy().toString();
+            String miasto=result.get(i).getparking_City();
+            String Ulica=result.get(i).getparking_Street();
+//            String nr_ulicty=result.get(i).getNr_ulicy().toString();
 
 
-            if (result.get(i).getIloscmiejsc().equals(0)) {
+            if (result.get(i).getfree_places().equals(0)) {
 
                 MarkerOptions userIndicator = new MarkerOptions()
-                        .position(new LatLng((result.get(i).getX()), result.get(i).getY())).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)).title(miasto+" "+Ulica+" "+nr_ulicty+" "+getResources().getString(R.string.free_places)+":"+result.get(i).getIloscmiejsc().toString());
+                        .position(new LatLng((result.get(i).getX()), result.get(i).getY())).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)).title(miasto+" "+Ulica+" "+" "+getResources().getString(R.string.free_places)+":"+result.get(i).getfree_places().toString());
                 temp = map.addMarker(userIndicator);
                 markerList.add(temp);
             }
             else {
                 MarkerOptions userIndicator = new MarkerOptions()
-                        .position(new LatLng((result.get(i).getX()), result.get(i).getY())).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)).title(miasto + " " + Ulica + " " + nr_ulicty + " " + getResources().getString(R.string.free_places) + ":" + result.get(i).getIloscmiejsc().toString());
+                        .position(new LatLng((result.get(i).getX()), result.get(i).getY())).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)).title(miasto + " " + Ulica + " " +" " + getResources().getString(R.string.free_places) + ":" + result.get(i).getfree_places().toString());
                 temp = map.addMarker(userIndicator);
                 markerList.add(temp);
 
@@ -97,21 +135,14 @@ public class Mapfragment extends Fragment implements GoogleApiClient.ConnectionC
         map.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
-
-
                 LatLng latLon = marker.getPosition();
-
                 Log.i(TAG, "onInfoWindowClick: TRUE");
-
                 //Cycle through places array
                 for (Marker place : markerList) {
                     if (latLon.equals(place.getPosition())) {
                         Log.i(TAG, "onInfoWindowClick: ITERATION" + place.getTitle());
-
                         Intent intent = new Intent(getActivity(), Parkingreservation.class);
                         Parkingreservation.startActivity(getActivity(), place.getTitle());
-
-
                     }
 
                 }
@@ -440,13 +471,10 @@ public class Mapfragment extends Fragment implements GoogleApiClient.ConnectionC
     @Override
     public boolean onMarkerClick(Marker marker) {
 
-
         Log.i(TAG, "onMarkerClick: infowindow in not show");
 
         return true;
-
     }
-
 }
 
 

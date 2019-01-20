@@ -14,10 +14,12 @@ public class ExampleUnitTest {
         public void overrideProperty() throws IOException {
             String out = new Scanner(new URL("https://polar-plains-14145.herokuapp.com/allocations").openStream(), "UTF-8").useDelimiter("\\A").next();
         }
-        @Test
-        public void Login-Test() throws IOException {
 
-        }
+        @Test
+        public void Retrofit_get_Test() throws IOException {
+
+    }
+
 
     }
 

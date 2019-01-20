@@ -6,6 +6,9 @@
 package com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.beans;
 
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Generated from json example
 {
@@ -23,36 +26,40 @@ package com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.bean
 
 public class _ParkingsResult {
 
-  
-@com.google.gson.annotations.SerializedName("ID")
+
+  @Expose
+  @SerializedName("ID")
   private Integer iD;
 
-  
-@com.google.gson.annotations.SerializedName("Ilosc_miejsc")
+  @Expose
+  @SerializedName("Ilosc_miejsc")
   private Integer iloscmiejsc;
 
-  
-@com.google.gson.annotations.SerializedName("Miasto")
+  @Expose
+  @SerializedName("Miasto")
   private String miasto;
 
-  
-@com.google.gson.annotations.SerializedName("Nazwa")
+
+  @Expose
+  @SerializedName("Nazwa")
   private String nazwa;
 
-  
-@com.google.gson.annotations.SerializedName("Nr_ulicy")
+  @Expose
+  @SerializedName("Nr_ulicy")
   private Integer nr_ulicy;
 
-  
-@com.google.gson.annotations.SerializedName("Ulica")
+
+  @Expose
+  @SerializedName("Ulica")
   private String ulica;
 
-  
-@com.google.gson.annotations.SerializedName("Wspolrzedna_X")
+  @Expose
+  @SerializedName("Wspolrzedna_X")
   private Double X;
 
-  
-@com.google.gson.annotations.SerializedName("Wspolrzedna_Y")
+
+  @Expose
+  @SerializedName("Wspolrzedna_Y")
   private Double Y;
 
   public Integer getID() {
