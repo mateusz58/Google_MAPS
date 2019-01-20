@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity
 
      public static  JsonPlaceHolderApi service;
 
-
+    private String result;
     NavigationView navigationView = null;
 
     TextView logintext=null;
@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity
     ImageButton floatButton;
 
     final int PERMISSION_READ_STATE=1;
+    public static List<Parking_builder> parking_list;
 
     final String url="http://polar-plains-14145.herokuapp.com/parks/";
 
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         protected String doInBackground(Void... params) {
 
-            String out = "0";
+            result = "0";
             try {
 
                 Log.w(TAG, "doInBackground:Retrofit mobile client initialization ");
@@ -82,9 +83,6 @@ public class MainActivity extends AppCompatActivity
 //                Call<EmployeeList> call = service.getEmployeeData(100);
 
                 Call<List<Parking_builder>> call = service.getParking();
-
-
-
                 call.enqueue(new Callback<List<Parking_builder>>() {
                     @Override
                     public void onResponse(Call<List<Parking_builder>> call, Response<List<Parking_builder>> response) {
@@ -94,10 +92,8 @@ public class MainActivity extends AppCompatActivity
                             Log.w(TAG, "doInBackground:Retrofit mobile client Response message: "+response.message());
                             return;
                         }
-
-                        List<Parking_builder> datas = response.body();
-
-                        for (Parking_builder data : datas) {
+                        parking_list = response.body();
+                        for (Parking_builder data : parking_list) {
                             String content = "";
                             content += "id: " + data.getid() + "\n";
 //                            content += "User ID: " + data.getUser() + "\n";
@@ -167,25 +163,23 @@ public class MainActivity extends AppCompatActivity
 
 
 
-                return out;
+                return result;
             } catch (Exception e) {
 
                 Log.e(TAG, e.getMessage(), e);
                 Toast.makeText(MainActivity.this, R.string.internet_error, Toast.LENGTH_SHORT).show();
             } finally {
 
-//                Log.i(TAG, "doInBackground:out value"+out);
+                Log.i(TAG, "doInBackground:out value"+result);
 
 
-                return out;
+                return result;
 
             }
         }
 
         @Override
         protected void onPostExecute(String out) {
-
-            if (out == "1") {
 
                 Log.w(TAG, "onPostExecute:Map initialization ");
                 //Log.w("JSON", "Lista pobranych wspolrzednych" + out);
@@ -200,12 +194,6 @@ public class MainActivity extends AppCompatActivity
                 } catch (Exception e) {
                     Log.v(TAG, e.toString());
                 }
-
-
-            } else {
-
-                Toast.makeText(MainActivity.this, R.string.internet_error, Toast.LENGTH_SHORT).show();
-            }
 
         }
     }
@@ -271,14 +259,7 @@ public class MainActivity extends AppCompatActivity
 
               }
               new GetParking().execute();
-              Mapfragment fragment = new Mapfragment();
 
-              android.support.v4.app.FragmentTransaction fragmentTransaction =
-                      getSupportFragmentManager().beginTransaction();
-              fragmentTransaction.replace(R.id.fragment_container, fragment);
-              fragmentTransaction.commit();
-
-              getSupportActionBar().show();
 
 
 
@@ -335,14 +316,8 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_map) {//przejscie do mapy
 
-            Mapfragment fragment = new Mapfragment();
-
-            android.support.v4.app.FragmentTransaction fragmentTransaction =
-                    getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.fragment_container, fragment);
-            fragmentTransaction.commit();
-
             getSupportActionBar().show();
+            new GetParking().execute();
 
 
 

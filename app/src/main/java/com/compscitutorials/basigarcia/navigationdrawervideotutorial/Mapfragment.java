@@ -21,7 +21,6 @@ import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.Parking_models.Parking_builder;
-import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.beans._ParkingsResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -37,7 +36,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 //import com.google.android.gms.vision.barcode.Barcode;
-import com.magnet.android.mms.async.Call;
 
 import java.io.IOException;
 import java.util.List;
@@ -46,6 +44,7 @@ import java.util.Vector;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.compscitutorials.basigarcia.navigationdrawervideotutorial.MainActivity.parking_list;
 import static com.compscitutorials.basigarcia.navigationdrawervideotutorial.MainActivity.service;
 
 public class Mapfragment extends Fragment implements GoogleApiClient.ConnectionCallbacks,
@@ -63,74 +62,37 @@ public class Mapfragment extends Fragment implements GoogleApiClient.ConnectionC
     Location mLastLocation;
     GoogleApiClient mGoogleApiClient;
     private Button btnShowLocation;
-    private List<Parking_builder> result;
+//    private List<Parking_builder> parking_list;
 
 
     private void getParkings() throws Exception {
         Marker temp;
 //        Call<List<_ParkingsResult>> callObject = MainActivity.Parking_list.get_Parkings(null);
-//        List<_ParkingsResult> result = callObject.get();
-
-        retrofit2.Call<List<Parking_builder>> call = service.getParking();
-        service.getParking();
-        call.enqueue(new Callback<List<Parking_builder>>() {
-            @Override
-            public void onResponse(retrofit2.Call<List<Parking_builder>> call, Response<List<Parking_builder>> response) {
-
-                if (!response.isSuccessful()) {
-                    Log.w(TAG, "doInBackground:Retrofit mobile client Response Code: "+response.code());
-                    Log.w(TAG, "doInBackground:Retrofit mobile client Response message: "+response.message());
-                    return;
-                }
-                List<Parking_builder> datas = response.body();
-                result=datas;
-                for (Parking_builder data : datas) {
-                    String content = "";
-                    content += "id: " + data.getid() + "\n";
-//                            content += "User ID: " + data.getUser() + "\n";
-                    content += "Parking name: " + data.getparking_name() + "\n";
-//                            content += "Registration plate: " + data.getRegistrationPlate() + "\n\n";
-                    Log.w(TAG, "doInBackground:Retrofit mobile client  JSON: "+content);
-                }
-            }
-            @Override
-            public void onFailure(retrofit2.Call<List<Parking_builder>> call, Throwable t)
-            {
-
-                Log.w(TAG, "doInBackground:Retrofit mobile client Failure JS: "+t.getMessage());
-            }
-        });
-
-
+//        List<_ParkingsResult> parking_list = callObject.get();
         Geocoder gc = new Geocoder(getActivity());
         Log.i(TAG, "getParkings:started");
-        for (int i = 1; i < result.size(); i++) {
+        for (int i = 0; i < parking_list.size(); i++) {
 
+            Log.i(TAG, "getParkings X:"+ parking_list.get(i).getX().toString()+"\n");
+            Log.i(TAG, "getParkings Y:"+ parking_list.get(i).getY().toString()+"\n");
+            Log.i(TAG, "getParkings ilosc miejsc:"+ parking_list.get(i).getfree_places().toString()+"\n");
+            String miasto= parking_list.get(i).getparking_City();
+            String Ulica= parking_list.get(i).getparking_Street();
+//            String nr_ulicty=parking_list.get(i).getNr_ulicy().toString();
 
-            Log.i(TAG, "getParkings X:"+result.get(i).getX().toString());
-            Log.i(TAG, "getParkings ilosc miejsc:"+result.get(i).getfree_places().toString());
-
-
-            String miasto=result.get(i).getparking_City();
-            String Ulica=result.get(i).getparking_Street();
-//            String nr_ulicty=result.get(i).getNr_ulicy().toString();
-
-
-            if (result.get(i).getfree_places().equals(0)) {
+            if (parking_list.get(i).getfree_places().equals(0)) {
 
                 MarkerOptions userIndicator = new MarkerOptions()
-                        .position(new LatLng((result.get(i).getX()), result.get(i).getY())).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)).title(miasto+" "+Ulica+" "+" "+getResources().getString(R.string.free_places)+":"+result.get(i).getfree_places().toString());
+                        .position(new LatLng((parking_list.get(i).getX()), parking_list.get(i).getY())).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)).title(miasto+" "+Ulica+" "+" "+getResources().getString(R.string.free_places)+":"+ parking_list.get(i).getfree_places().toString());
                 temp = map.addMarker(userIndicator);
                 markerList.add(temp);
             }
             else {
                 MarkerOptions userIndicator = new MarkerOptions()
-                        .position(new LatLng((result.get(i).getX()), result.get(i).getY())).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)).title(miasto + " " + Ulica + " " +" " + getResources().getString(R.string.free_places) + ":" + result.get(i).getfree_places().toString());
+                        .position(new LatLng((parking_list.get(i).getX()), parking_list.get(i).getY())).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)).title(miasto + " " + Ulica + " " +" " + getResources().getString(R.string.free_places) + ":" + parking_list.get(i).getfree_places().toString());
                 temp = map.addMarker(userIndicator);
                 markerList.add(temp);
-
             }
-
         }
         map.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
@@ -324,19 +286,19 @@ public class Mapfragment extends Fragment implements GoogleApiClient.ConnectionC
         }
         // Updates the location and zoom of the MapView
 
-        // LatLng sydney = new LatLng(-33.867, 151.206);
+//         LatLng sydney = new LatLng(-33.867, 151.206);
+//
+//        //   map.setMyLocationEnabled(true);
+//        // map.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 13));
+//
+//         map.addMarker(new MarkerOptions()
+//              .title("Sydney")
+//              .snippet("The most populous city in Australia.")
+//            .position(sydney));
 
-        //   map.setMyLocationEnabled(true);
-        // map.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 13));
-
-        // map.addMarker(new MarkerOptions()
-        //      .title("Sydney")
-        //      .snippet("The most populous city in Australia.")
-        //    .position(sydney));
-
-        //  map.addMarker(new MarkerOptions()
-        //        .position(new LatLng(10, 10))
-        //      .title("Hello worl"));
+//          map.addMarker(new MarkerOptions()
+//                .position(new LatLng(10, 10))
+//              .title("Hello worl"));
 
         return v;
 
@@ -367,14 +329,10 @@ public class Mapfragment extends Fragment implements GoogleApiClient.ConnectionC
             marker.setVisible(false);
 
 
-
-
     }
-
     @Override
     public void onResume() {
         mapView.onResume();
-
         super.onResume();
 
         try {
@@ -383,18 +341,11 @@ public class Mapfragment extends Fragment implements GoogleApiClient.ConnectionC
             e.printStackTrace();
         }
         Log.i(TAG, "onResume:Success ");
-
-
     }
-
     @Override
     public void onPause() {
-
         super.onPause();
-
-
     }
-
     @Override
     public void onDestroy() {
         super.onDestroy();
