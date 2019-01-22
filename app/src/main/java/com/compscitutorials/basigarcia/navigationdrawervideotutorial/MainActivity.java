@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity
 
           try {
               super.onStart();
-              if(!API.userid.equals("0")) {
+              if(LoginActivity.token!="none") {
                   // navigationView.getMenu().getItem(2).setChecked(true);
                   navigationView.getMenu().getItem(2).setIcon(R.drawable.ic_no_encryption_black_24dp);
                   navigationView.getMenu().getItem(2).setTitle("Log out");

@@ -311,16 +311,13 @@ boolean validate_reservation_number(EditText reserve)
 
                     }
 
-
-
-                    if(API.userid.equals("0"))
+                    if(LoginActivity.token=="none")
                     {
                         Toast.makeText(Parkingreservation.this, "Login to reserve parking", Toast.LENGTH_SHORT).show();
                         Intent myIntent = new Intent(this,MainActivity.class);
                         this.startActivity(myIntent);//to jest wazne
 
                     }
-
 
                     else {
                         // TODO: 19.05.16 Rezerwacja parkingu
