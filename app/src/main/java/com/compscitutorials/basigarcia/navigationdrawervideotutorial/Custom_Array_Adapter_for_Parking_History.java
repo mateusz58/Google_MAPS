@@ -48,7 +48,8 @@ public class Custom_Array_Adapter_for_Parking_History extends ArrayAdapter<Parki
         rowView.setBackgroundColor(Color.argb(100,204,255,204));
         Calendar cal = Calendar.getInstance();
         //rezerwacja niewazna
-        if (values.get(position).getTheDo().before(cal.getTime())) {
+        if (values.get(position).getTheDo().before(cal.getTime()))
+        {
             imageView.setImageResource(R.drawable.ic_close_black_24dp);
             rowView.setBackgroundColor(Color.argb(100,255,153,153));
 

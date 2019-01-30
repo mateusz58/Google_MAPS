@@ -359,7 +359,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                     Log.w(TAG, "doInBackground:Retrofit mobile client Response Code: "+statusLine.getStatusCode());
                 }
 
-
                 Log.w(TAG, "doInBackground:Retrofit mobile client Response Code: "+statusLine.getStatusCode());
 
 

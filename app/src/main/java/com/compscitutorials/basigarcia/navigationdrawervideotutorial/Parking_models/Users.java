@@ -189,7 +189,6 @@ public class Users implements Serializable
     public void setUserPermissions(List<Object> userPermissions) {
         this.userPermissions = userPermissions;
     }
-
     @JsonAnyGetter
     public Map<String, Object> getAdditionalProperties() {
         return this.additionalProperties;
