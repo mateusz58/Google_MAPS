@@ -284,6 +284,11 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         this.startActivity(myIntent);//to jest wazne
     }
 
+    public void Reset_password(View view)
+    {
+        Log.i(TAG,"Reset_password");
+
+    }
 
     private interface ProfileQuery {
         String[] PROJECTION = {

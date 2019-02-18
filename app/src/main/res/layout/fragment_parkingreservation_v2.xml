@@ -1,0 +1,143 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#045b89"
+    tools:context="com.compscitutorials.basigarcia.navigationdrawervideotutorial.Parkingreservation">
+
+
+
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignWithParentIfMissing="false"
+    android:id="@+id/linearLayout"
+    android:layout_marginTop="30dp"
+    android:layout_alignParentTop="true"
+    android:layout_alignParentStart="true">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start"
+        android:id="@+id/btn_start"
+
+
+        />
+
+    <EditText
+    android:layout_width="145dp"
+    android:layout_height="wrap_content"
+    android:id="@+id/in_start_date"
+        android:editable="false"
+        android:clickable="false"
+
+
+
+
+        android:maxLines="1" />
+
+    <EditText
+        android:layout_width="145dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/in_start_time"
+        android:maxLines="1"
+        android:editable="false"
+        android:clickable="false"
+
+        />
+
+
+</LinearLayout>
+
+
+
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/linearLayout2"
+    android:layout_gravity="center"
+    android:layout_below="@+id/linearLayout"
+    android:layout_alignParentStart="true">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="END"
+        android:id="@+id/btn_end"
+        android:layout_below="@+id/btn_end"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+    android:layout_width="145dp"
+    android:layout_height="wrap_content"
+    android:id="@+id/in_end_date"
+    android:layout_gravity="center_horizontal|top"
+    android:layout_alignBottom="@+id/btn_end"
+    android:layout_alignParentEnd="true"
+    android:layout_alignParentRight="true"
+        android:editable="false"
+        android:clickable="false"
+        />
+
+
+    <EditText
+        android:layout_width="145dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/in_end_time"
+        android:maxLines="1"
+        android:layout_alignTop="@+id/in_end_date"
+        android:layout_toEndOf="@id/btn_end"
+        android:editable="false"
+        android:clickable="false"/></LinearLayout>
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:id="@+id/linearLayout3"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/linearLayout2"
+        android:layout_centerHorizontal="true">
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:hint="     Registration number"
+
+            android:ems="10"
+            android:id="@+id/in_reserve"
+            android:layout_alignParentTop="false"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="80dp"
+            android:editable="false" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linearLayout3"
+        android:layout_alignParentStart="true">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Reserve"
+            android:id="@+id/btn_reserve"
+            android:layout_below="@+id/editText"
+
+            style="@style/Base.TextAppearance.AppCompat.Widget.Button"
+            android:enabled="true"
+            android:gravity="center"
+            android:layout_marginLeft="140dp"
+            android:layout_gravity="center_vertical" />
+    </LinearLayout>
+
+
+</RelativeLayout>
