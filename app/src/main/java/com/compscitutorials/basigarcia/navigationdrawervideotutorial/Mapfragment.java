@@ -20,7 +20,7 @@ import android.widget.Button;
 import android.widget.SearchView;
 import android.widget.Toast;
 
-import com.compscitutorials.basigarcia.navigationdrawervideotutorial.Parking_models.Parking_builder;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.TEMP._ParkingsResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -41,11 +41,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Vector;
 
-import retrofit2.Callback;
-import retrofit2.Response;
+import retrofit2.Call;
 
 import static com.compscitutorials.basigarcia.navigationdrawervideotutorial.MainActivity.parking_list;
-import static com.compscitutorials.basigarcia.navigationdrawervideotutorial.MainActivity.service;
 
 public class Mapfragment extends Fragment implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,View.OnClickListener,SearchView.OnQueryTextListener,GoogleMap.OnMarkerClickListener {
@@ -62,12 +60,12 @@ public class Mapfragment extends Fragment implements GoogleApiClient.ConnectionC
     Location mLastLocation;
     GoogleApiClient mGoogleApiClient;
     private Button btnShowLocation;
-//    private List<Parking_builder> parking_list;
+//    private List<Parking> parking_list;
 
 
     private void getParkings() throws Exception {
         Marker temp;
-//        Call<List<_ParkingsResult>> callObject = MainActivity.Parking_list.get_Parkings(null);
+//        Call<List<_ParkingsResult>> callObject = MainActivity.parking_list.get(0);
 //        List<_ParkingsResult> parking_list = callObject.get();
         Geocoder gc = new Geocoder(getActivity());
         Log.i(TAG, "getParkings:started");
@@ -241,7 +239,7 @@ public class Mapfragment extends Fragment implements GoogleApiClient.ConnectionC
 
         } else {
 
-            Toast.makeText(getActivity(), "(Couldn't get your localization. Make sure GPS is enabled on the device)", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), R.string.GPRS_error, Toast.LENGTH_SHORT).show();
         }
 
     }

@@ -8,11 +8,12 @@ import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.beans.Parking_reservationsResult;
-import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.beans._ParkingsResult;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.TEMP.Parking_reservationsResult;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.TEMP._ParkingsResult;
 import com.magnet.android.mms.async.Call;
 
 import org.json.JSONArray;
@@ -27,15 +28,17 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
-
 public class Parkinghistory extends ListFragment{
+
+///Trashes
+    public static ArrayList<Parking_reservationsResult> Reservations_List=new ArrayList<>();
 
     List<Address> geocodeMatches = null;
     Geocoder gc;
     String Address1;
     String Address2;
     String Address3;
-    public static ArrayList<Parking_reservationsResult> Reservations_List=new ArrayList<>();
+//    public static ArrayList<Parking_reservationsResult> Reservations_List=new ArrayList<>();
 
     final String TAG="Parkinghistory";
 
@@ -77,7 +80,7 @@ public class Parkinghistory extends ListFragment{
         protected void onPostExecute(String out) {
 
 
-            ArrayList<Parking_reservationsResult> Reservations_List=new ArrayList<>();
+//            ArrayList<Parking_reservationsResult> Reservations_List=new ArrayList<>();
 
             if (out.equals("1")) {
                 Toast.makeText(getActivity(), "You must log in to check your reservations" ,Toast.LENGTH_SHORT).show();
@@ -191,8 +194,8 @@ public class Parkinghistory extends ListFragment{
         obj.execute();
             Log.i(TAG, "onViewCreated: View has been created");
             success = true;
-           //ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, copyArr);
-           //setListAdapter(adapter);
+//           ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, copyArr);
+//           setListAdapter(adapter);
         } catch (Exception e) {
             Log.e(TAG, "onViewCreated: " + e.getMessage());
         } finally {

@@ -13,7 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.beans.Parking_reservationsResult;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.TEMP.Parking_reservationsResult;
 
 import java.util.ArrayList;
 import java.util.Calendar;

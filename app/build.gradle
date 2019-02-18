@@ -1,11 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+
     useLibrary 'org.apache.http.legacy'
     dexOptions {
         preDexLibraries = false
         javaMaxHeapSize "2g"
+
     }
+//    testInstrumentationRunner "com.compscitutorials.basigarcia.navigationdrawervideotutorial"
 
     repositories {
         maven {
@@ -15,11 +18,13 @@ android {
         mavenCentral()
     }
 
+
     dependencies {
         compile('com.magnet:r2m-sdk-android:1.1.0@aar') {
             transitive = true
         }
     }
+
 
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES.txt'
@@ -49,6 +54,7 @@ android {
         versionName "1.0"
         multiDexEnabled = true
         android.defaultConfig.javaCompileOptions.annotationProcessorOptions.includeCompileClasspath = true
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -62,7 +68,11 @@ android {
     }
 }
 
-
+allprojects {
+    repositories {
+        jcenter()
+    }
+}
 
 configurations.compile {
     exclude module: 'spring-aop'
@@ -72,23 +82,78 @@ configurations.compile {
 }
 
 dependencies {
-    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
-    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
-    implementation 'io.reactivex.rxjava2:rxjava:2.1.13'
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
-    compile 'com.google.android.gms:play-services-location:8.4.0'
+
     compile fileTree(dir: 'libs', include: ['*.jar'])
+
+
+//
+//
+
+
+    //GSM locations
+
+    compile 'com.google.android.gms:play-services-location:8.4.0'
+
+    //Volley API
+
     compile group: 'com.mcxiaoke.volley', name: 'library', version: '1.0.19'
-    testCompile 'junit:junit:4.12'
+
 
     //noinspection GradleCompatible
     compile 'com.android.support:appcompat-v7:23.3.0'
     compile 'com.android.support:design:24.2.1'
     compile 'de.hdodenhof:circleimageview:1.3.0'
     compile 'com.android.support:design:24.2.1'
-    compile 'org.springframework.android:spring-android-rest-template:1.0.1.RELEASE'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.3.2'
     compile 'com.android.support:support-v4:24.2.1'
+
+    //Jackson
+
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.3.2'
+
+    //Spring framework
+
+    compile 'org.springframework.android:spring-android-rest-template:1.0.1.RELEASE'
+
+
+    //Apache http
+
+    implementation 'org.apache.commons:commons-lang3:3.6'
+
+    // Rx java
+
+    compile 'io.reactivex:rxandroid:1.2.1'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.13'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
+
+
+    //Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
+
+
+    // OkHttp
+    compile 'com.squareup.okhttp3:okhttp:3.8.1'
+    androidTestCompile 'com.squareup.okhttp3:mockwebserver:3.8.1'
+
+
+    // Butter knife
     compile 'com.jakewharton:butterknife:6.1.0'
+
+    //Dagger
+    compile "com.google.dagger:dagger:2.10"
+    compile "com.google.dagger:dagger-android:2.10"
+    annotationProcessor "com.google.dagger:dagger-android-processor:2.10"
+    annotationProcessor "com.google.dagger:dagger-compiler:2.10"
+
+    //Test related
+    // Mockito
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-core:2.6.8'
+    testImplementation 'com.squareup.okhttp3:mockwebserver:3.13.0'
+
+    // AssertJ
+    testCompile "org.assertj:assertj-core:2.7.0"
+
 }

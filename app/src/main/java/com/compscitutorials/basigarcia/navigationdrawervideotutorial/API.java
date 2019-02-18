@@ -1,16 +1,6 @@
 package com.compscitutorials.basigarcia.navigationdrawervideotutorial;
 
-import android.annotation.TargetApi;
-import android.os.Build;
-
-import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.beans._ParkingsResult;
-
 import java.util.Vector;
-
-import io.reactivex.Single;
-import retrofit2.http.GET;
-import retrofit2.http.Path;
-import retrofit2.http.Query;
 
 
 //http://polar-plains-14145.herokuapp.com/parks_wsp/1

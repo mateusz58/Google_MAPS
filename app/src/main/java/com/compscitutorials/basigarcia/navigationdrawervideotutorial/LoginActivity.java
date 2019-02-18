@@ -36,15 +36,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.compscitutorials.basigarcia.navigationdrawervideotutorial.Parking_models.Users;
-import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.FactoryAPI;
-import com.compscitutorials.basigarcia.navigationdrawervideotutorial.network.API_Service;
-import com.compscitutorials.basigarcia.navigationdrawervideotutorial.network.Authentication_Service;
-import com.compscitutorials.basigarcia.navigationdrawervideotutorial.network.Parking_Service;
-import com.magnet.android.mms.async.Call;
-import com.magnet.android.mms.exception.SchemaException;
-
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
@@ -57,22 +48,18 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import butterknife.InjectView;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import static android.Manifest.permission.READ_CONTACTS;
+import static com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.Parking_Service.BASE_URL;
 
 public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
     public static String token="none";
 
-    private FactoryAPI factoryAPI;
     public final String TAG="LoginActivity";
     @InjectView(R.id.email) EditText emailtext;
     @InjectView(R.id.password) EditText passwordtext ;
@@ -331,25 +318,31 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         protected Boolean doInBackground(Void... params) {
 
             Log.w(TAG, "doInBackground:Initiated ");
-
+            boolean result=false;
             Log.i(TAG, "doInBackground: login "+mEmail);
             Log.i(TAG, "doInBackground: password "+mPassword);
             String TXTEMAIL=mEmail.replaceAll("[\\s()]+","");
             String TXTPASSWORD=mPassword.replaceAll("[\\s()]+","");
             HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost("http://192.168.8.104:8000/api-token-auth/");
+            HttpPost httppost = new HttpPost(BASE_URL+"api-token-auth/");
             try {
                 // Add your data
                 List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
                 nameValuePairs.add(new BasicNameValuePair("username", TXTEMAIL));
                 nameValuePairs.add(new BasicNameValuePair("password", TXTPASSWORD));
                 httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
                 // Execute HTTP Post Request
                 HttpResponse response = httpclient.execute(httppost);
                 StatusLine statusLine = response.getStatusLine();
                 String responseBody = EntityUtils.toString(response.getEntity());
-                if(statusLine.getStatusCode()==200) {
+                Log.w(TAG, "doInBackground:Retrofit mobile client BEFORE CHECK Response Code: "+statusLine.getStatusCode());
+                if(statusLine.getStatusCode()==400)
+                {
+                  Toast.makeText(LoginActivity.this,R.string.error_incorrect_password_or_login,Toast.LENGTH_SHORT).show();
+                }
+                if(statusLine.getStatusCode()==200)
+                {
+                    result=true;
                     responseBody = responseBody.replaceAll("\"", "");
                     responseBody = responseBody.replaceAll("\\{", "");
                     responseBody = responseBody.replaceAll("\\}", "");
@@ -358,26 +351,19 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                     Log.w(TAG, "doInBackground:Retrofit mobile client received Token: "+responseBody);
                     Log.w(TAG, "doInBackground:Retrofit mobile client Response Code: "+statusLine.getStatusCode());
                 }
-
                 Log.w(TAG, "doInBackground:Retrofit mobile client Response Code: "+statusLine.getStatusCode());
-
-
             } catch (ClientProtocolException e) {
-                Log.e(TAG, "doInBackground:Retrofit mobile client Response Code: "+e.toString());
+                Toast.makeText(LoginActivity.this, R.string.internet_error, Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "doInBackground:Retrofit mobile client Failure Response Code: "+e.toString());
             } catch (IOException e) {
-                Log.e(TAG, "doInBackground:Retrofit mobile client Response Code: "+e.toString());
+                Toast.makeText(LoginActivity.this, R.string.internet_error, Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "doInBackground:Retrofit mobile client Failure Response Code: "+e.toString());
             }
-
-
-
-
-            Boolean results = false;
-
-
-    return true;
+            finally
+            {
+                return result;
+            }
         }
-
-
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
@@ -415,15 +401,11 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                             }
                         }
                     };
-
                     AlertDialog.Builder builder = new AlertDialog.Builder(this.mContext);
-                    builder.setMessage(R.string.confirm_registry).setPositiveButton(R.string.yes, dialogClickListener)
-                            .setNegativeButton(R.string.no, dialogClickListener).show();
+                    builder.setMessage(R.string.confirm_registry).setPositiveButton(R.string.yes, dialogClickListener).setNegativeButton(R.string.no, dialogClickListener).show();
                 }
-
             } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+                Toast.makeText(LoginActivity.this,R.string.error_incorrect_password_or_login,Toast.LENGTH_SHORT).show();
             }
         }
 

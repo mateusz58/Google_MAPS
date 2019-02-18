@@ -20,11 +20,10 @@ import android.widget.Toast;
 
 //import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.FactoryAPI;
 //import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.FactoryAPIFactory;
-import com.compscitutorials.basigarcia.navigationdrawervideotutorial.Parking_models.Parking_builder;
-import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.FactoryAPI;
-import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.FactoryAPI_Retrofit;
-import com.compscitutorials.basigarcia.navigationdrawervideotutorial.network.API_Service;
-import com.compscitutorials.basigarcia.navigationdrawervideotutorial.network.Parking_Service;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.TEMP.FactoryAPI;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.API_end_points;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.beans.Parking;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.Parking_Service;
 //import com.magnet.android.mms.MagnetMobileClient;
 //import com.magnet.android.mms.async.Call;
 
@@ -39,12 +38,12 @@ public class MainActivity extends AppCompatActivity
 
 
     private final String TAG="MainActivity";
+
+
+
+    ////TRASES
     public static FactoryAPI Parking_list;
-
-
-    public static FactoryAPI_Retrofit Parking_list_v_retrofit;
-
-     public static API_Service service;
+     public static API_end_points service;
 
     private String result;
     NavigationView navigationView = null;
@@ -54,7 +53,7 @@ public class MainActivity extends AppCompatActivity
     ImageButton floatButton;
 
     final int PERMISSION_READ_STATE=1;
-    public static List<Parking_builder> parking_list;
+    public static List<Parking> parking_list;
 
     final String url="http://polar-plains-14145.herokuapp.com/parks/";
 
@@ -67,11 +66,12 @@ public class MainActivity extends AppCompatActivity
             try {
 
                 Log.w(TAG, "doInBackground:Retrofit mobile client initialization ");
-                API_Service service = Parking_Service.getRetrofitInstance().create(API_Service.class);
-                Call<List<Parking_builder>> call = service.getParking();
-                call.enqueue(new Callback<List<Parking_builder>>() {
+                API_end_points service = Parking_Service.getRetrofitInstance().create(API_end_points.class);
+                Call<List<Parking>> call = service.getParking();
+                call.enqueue(new Callback<List<Parking>>() {
                     @Override
-                    public void onResponse(Call<List<Parking_builder>> call, Response<List<Parking_builder>> response) {
+                    public void onResponse(Call<List<Parking>> call, Response<List<Parking>> response) {
+
 
                         if (!response.isSuccessful()) {
                             Log.w(TAG, "doInBackground:Retrofit mobile client Response Code: "+response.code());
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity
                             return;
                         }
                         parking_list = response.body();
-                        for (Parking_builder data : parking_list) {
+                        for (Parking data : parking_list) {
                             String content = "";
                             content += "id: " + data.getid() + "\n";
 //                            content += "User ID: " + data.getUser() + "\n";
@@ -91,9 +91,9 @@ public class MainActivity extends AppCompatActivity
                     }
 
                     @Override
-                    public void onFailure(Call<List<Parking_builder>> call, Throwable t) {
+                    public void onFailure(Call<List<Parking>> call, Throwable t) {
 
-                        Log.w(TAG, "doInBackground:Retrofit mobile client Failure JS: "+t.getMessage());
+                        Log.e(TAG, "doInBackground:Retrofit mobile client Failure JS: "+t.getMessage());
                     }
                 });
 
