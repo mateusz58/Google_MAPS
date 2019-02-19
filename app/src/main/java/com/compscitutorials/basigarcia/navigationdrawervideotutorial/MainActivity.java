@@ -2,6 +2,7 @@ package com.compscitutorials.basigarcia.navigationdrawervideotutorial;
 
 import android.Manifest;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -20,6 +21,8 @@ import android.widget.Toast;
 
 //import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.FactoryAPI;
 //import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.FactoryAPIFactory;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.Recycler_List.Booking_View_Fragment;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.Recycler_List.Booking_View_Fragment.OnFragmentInteractionListener;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.TEMP.FactoryAPI;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.API_end_points;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.beans.Parking;
@@ -34,17 +37,18 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,OnFragmentInteractionListener {
+
+   private Booking_View_Fragment booking_view_fragment;
+
+
+
 
 
     private final String TAG="MainActivity";
-
-
-
     ////TRASES
     public static FactoryAPI Parking_list;
      public static API_end_points service;
-
     private String result;
     NavigationView navigationView = null;
 
@@ -56,6 +60,13 @@ public class MainActivity extends AppCompatActivity
     public static List<Parking> parking_list;
 
     final String url="http://polar-plains-14145.herokuapp.com/parks/";
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+        Log.w(TAG,"Interaction");
+
+    }
 
 
     class GetParking extends AsyncTask<Void, Void, String> {
@@ -141,10 +152,6 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
 
-
-
-
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -193,15 +200,14 @@ public class MainActivity extends AppCompatActivity
 
               }
               new GetParking().execute();
-
-
-
+              booking_view_fragment=new Booking_View_Fragment();
 
           }catch(Exception ex)
           {
               Log.d(TAG,ex.getMessage());
 
           }
+
 
       }
     @Override
@@ -257,19 +263,31 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_parkingplace) {
             Log.w(TAG, "onNavigationItemSelected: Restartactivity");
-            getSupportActionBar().hide();
-            Parkinghistory fragment = new Parkinghistory();
-            //fragment.newInstance("BLA","BLA1");
+
+            getSupportActionBar().show();
             android.support.v4.app.FragmentTransaction fragmentTransaction =
-                    getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.fragment_container,fragment);
+                  getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_container, booking_view_fragment);
             fragmentTransaction.commit();
+//            Parkinghistory fragment = new Parkinghistory();
+//            //fragment.newInstance("BLA","BLA1");
+//            android.support.v4.app.FragmentTransaction fragmentTransaction =
+//                    getSupportFragmentManager().beginTransaction();
+//            fragmentTransaction.replace(R.id.fragment_container,fragment);
+//            fragmentTransaction.commit();
+
+
+
         } else if (id == R.id.nav_logout) {///przejscie do RestFramgnet
             API.userid="0";
             LoginActivity.token="none";
             Intent myIntent = new Intent(this,LoginActivity.class);
             this.startActivity(myIntent);//to jest wazne
         } else if (id == R.id.nav_tools) {
+
+
+
+
         } else if (id == R.id.nav_share) {
 
 
