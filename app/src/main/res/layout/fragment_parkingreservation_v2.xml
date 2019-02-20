@@ -20,43 +20,37 @@
         android:scrollbars="vertical">
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
-            android:id="@+id/layout_dynamic_view_items"
+            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:orientation="horizontal"
-            android:scrollbarAlwaysDrawHorizontalTrack="true">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="10dp">
 
-            <EditText
-                android:id="@+id/number_edit_text"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+                <EditText
+                    android:id="@+id/editTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="" />
+                <ImageView
+                    android:id="@+id/imgViewAdd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="addValue"
+                    android:background="@drawable/add"
+                    />
+            </LinearLayout>
+            <ListView
+                android:id="@+id/listview"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="5"
-                android:capitalize="characters"
-                android:clickable="true"
-                android:cursorVisible="false"
-                android:focusableInTouchMode="true"
-                android:freezesText="true"
-                android:hint="Registration plate number"
-                android:inputType="textCapWords|phone"
-                android:lines="1"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:textAlignment="center"
-                android:textAllCaps="true"
-                android:textStyle="bold"
-                tools:cursorVisible="false"
-                tools:focusable="auto"
-
-                tools:focusableInTouchMode="true" />
-
-            <Button
-                android:id="@+id/delete_button"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
                 android:layout_weight="1"
-                android:background="@android:drawable/ic_delete"
-                android:onClick="onDelete" />
+                android:dividerHeight="2dp" >
+            </ListView>
         </LinearLayout>
 
 

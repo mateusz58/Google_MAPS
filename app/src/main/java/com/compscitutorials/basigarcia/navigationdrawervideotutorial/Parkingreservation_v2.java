@@ -1,6 +1,7 @@
 package com.compscitutorials.basigarcia.navigationdrawervideotutorial;
 
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -17,6 +18,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -26,6 +28,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.Testmodel.Model;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.API_end_points;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.Parking_Service;
 
@@ -43,20 +46,17 @@ import static android.text.Selection.setSelection;
 public class Parkingreservation_v2 extends AppCompatActivity implements View.OnClickListener {
 
 
-    TextView _loginLink;
 
 
+    ///registration plates numbers
+
+    ListView listView;
+    EditText editTextView;
+    ArrayList<Model> ItemModelList;
+    CustomAdapter customAdapter;
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     //time
-
-    private LinearLayout parentLinearLayout;
-
-    private LinearLayout reserveLinearLayout;
-
-    EditText edittext_var ;
-
-    private LinearLayout layout_reserve;
 
     private static final String parkingIDparam = "ParkingID";
 
@@ -80,27 +80,10 @@ public class Parkingreservation_v2 extends AppCompatActivity implements View.OnC
     EditText txtDate_end;
     EditText txtTime_end;
 
-     int SMONTH;
-    int SYEAR;
-    int SDAY;
-    int SMINUTE;
-    int SHOUR;
-    int SSECOND;
-
-    int KMONTH;
-    int KYEAR;
-    int KDAY;
-    int KMINUTE;
-    int KHOUR;
-    int KSECOND;
-
-
     Calendar start;
 
 Date START=Calendar.getInstance().getTime();
     Date END=Calendar.getInstance().getTime();
-
-
 
     public Parkingreservation_v2() {
         // Required empty public constructor
@@ -163,97 +146,53 @@ boolean validate_reservation_number(EditText reserve)
     }
 
 
-    @InjectView(R.id.layout_reserve) LinearLayout _layout_reserve;
-    @InjectView(R.id.number_edit_text) EditText _number_edit_text;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_parkingreservation_v2);
 
-        parentLinearLayout = (LinearLayout) findViewById(R.id.layout_dynamic_view_list);
-
-
-        reserveLinearLayout=(LinearLayout) findViewById(R.id.layout_reserve);
-
         Bundle extras = getIntent().getExtras();
 //        parkingID=extras.getString(parkingIDparam);
-        btnDatePicker=(Button)findViewById(R.id.btn_end);
-        btnTimePicker=(Button)findViewById(R.id.btn_start);
-        btnreserve=(Button)findViewById(R.id.btn_reserve);
-        txtDate_start =(EditText)findViewById(R.id.in_start_date);
-        txtTime_start =(EditText)findViewById(R.id.in_start_time);
-        reserve =(EditText)findViewById(R.id.in_reserve);
+        btnDatePicker = (Button) findViewById(R.id.btn_end);
+        btnTimePicker = (Button) findViewById(R.id.btn_start);
+        btnreserve = (Button) findViewById(R.id.btn_reserve);
+        txtDate_start = (EditText) findViewById(R.id.in_start_date);
+        txtTime_start = (EditText) findViewById(R.id.in_start_time);
+        reserve = (EditText) findViewById(R.id.in_reserve);
+        txtDate_end = (EditText) findViewById(R.id.in_end_date);
+        txtTime_end = (EditText) findViewById(R.id.in_end_time);
 
-        edittext_var=(EditText)findViewById(R.id.number_edit_text);
-
-        txtDate_end =(EditText)findViewById(R.id.in_end_date);
-        txtTime_end =(EditText)findViewById(R.id.in_end_time);
 
         btnreserve.setOnClickListener(this);
         btnDatePicker.setOnClickListener(this);
         btnTimePicker.setOnClickListener(this);
 
-        ///PLATE LIST
 
-//        adapter=new ArrayAdapter<String>(this,
-//                android.R.layout.simple_list_item_1,
-//                listItems);
-//        setListAdapter(adapter);
-
-        edittext_var.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    reserveLinearLayout.setVisibility(View.VISIBLE);
-                }
-                else
-                {
-                    edittext_var = (EditText)((View) v.getParent()).findViewById(R.id.number_edit_text) ;
-                    reserveLinearLayout.setVisibility(View.GONE);
-                }
-            }
-        });
+        /// List of registaration plates layout
+        listView = (ListView) findViewById(R.id.listview);
+        editTextView = (EditText) findViewById(R.id.editTextView);
+        ItemModelList = new ArrayList<Model>();
+        customAdapter = new CustomAdapter(getApplicationContext(), ItemModelList);
+        listView.setEmptyView(findViewById(android.R.id.empty));
+        listView.setAdapter(customAdapter);
 
     }
-//    public void onSelect(View v) { // on click event for a SELECT button
-//
-//
-////        System.out.println(“The text is = “+ et.getText());
-//    }
-    public void onAddField(View v) {
 
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final View rowView = inflater.inflate(R.layout.field, null);
 
-        // Add the new row before the add field button.
-        parentLinearLayout.addView(rowView, parentLinearLayout.getChildCount() - 1);
+    //add values to list
+    @SuppressLint("NewApi")
+    public void addValue(View v) {
+        String name = editTextView.getText().toString();
+        if (name.isEmpty()) {
+            Toast.makeText(getApplicationContext(), "Plz enter Values",
+                    Toast.LENGTH_SHORT).show();
+        } else {
+            Model md = new Model(name);
+            ItemModelList.add(md);
+            customAdapter.notifyDataSetChanged();
+            editTextView.setText("");
+        }
     }
-    public void onDelete(View v) {
-        parentLinearLayout.removeView((View) v.getParent());
-    }
-
-//
-//    @Override
-//    public void onSelectionChanged(int start, int end) {
-//
-//        CharSequence text = (CharSequence) getText();
-//        if (text != null) {
-//            if (start != text.length() || end != text.length()) {
-//                setSelection(text.length(), text.length());
-//                return;
-//            }
-//        }
-//        super.onSelectionChanged(start, end);
-//    }
-
-
-    @Override
-    public void onBackPressed() {
-
-
-        moveTaskToBack(true);
-    }
-
 
     @Override
     public void onClick(View v) {
