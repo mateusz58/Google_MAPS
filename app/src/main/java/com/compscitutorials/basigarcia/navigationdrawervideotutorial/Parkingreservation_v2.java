@@ -10,11 +10,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -23,6 +25,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.API_end_points;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.Parking_Service;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -31,26 +35,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class Parkingreservation extends AppCompatActivity implements View.OnClickListener {
+public class Parkingreservation_v2 extends AppCompatActivity implements View.OnClickListener {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     //time
+
+    private LinearLayout parentLinearLayout;
 
     private static final String parkingIDparam = "ParkingID";
 
     private String parkingID;
-
-
     ///Array adapter
     ArrayList<String> listItems=new ArrayList<String>();
     ArrayAdapter<String> adapter;
     int clickCounter=0;
 
-
-
-
    private int mYear, mMonth, mDay, mHour, mMinute;
     //testings
-    final String TAG="Parkingreservation";
+    final String TAG="Parkingreservation_v2";
     private String mParam1;
     private String mParam2;
     Button btnreserve;
@@ -84,7 +85,7 @@ Date START=Calendar.getInstance().getTime();
 
 
 
-    public Parkingreservation() {
+    public Parkingreservation_v2() {
         // Required empty public constructor
     }
 
@@ -139,7 +140,7 @@ boolean validate_reservation_number(EditText reserve)
         Bundle extras = new Bundle();
         extras.putString(parkingIDparam, ParkingID);
         // Create and start intent for this activity
-        Intent intent = new Intent(context, Parkingreservation.class);
+        Intent intent = new Intent(context, Parkingreservation_v2.class);
         intent.putExtras(extras);
         context.startActivity(intent);
     }
@@ -147,10 +148,12 @@ boolean validate_reservation_number(EditText reserve)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_parkingreservation);
+        setContentView(R.layout.fragment_parkingreservation_v2);
+
+        parentLinearLayout = (LinearLayout) findViewById(R.id.layout_dynamic_view_list);
 
         Bundle extras = getIntent().getExtras();
-        parkingID=extras.getString(parkingIDparam);
+//        parkingID=extras.getString(parkingIDparam);
         btnDatePicker=(Button)findViewById(R.id.btn_end);
         btnTimePicker=(Button)findViewById(R.id.btn_start);
         btnreserve=(Button)findViewById(R.id.btn_reserve);
@@ -168,7 +171,7 @@ boolean validate_reservation_number(EditText reserve)
 
 
         ///PLATE LIST
-//
+
 //        adapter=new ArrayAdapter<String>(this,
 //                android.R.layout.simple_list_item_1,
 //                listItems);
@@ -176,6 +179,17 @@ boolean validate_reservation_number(EditText reserve)
 
 
     }
+
+    public void onAddField(View v) {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View rowView = inflater.inflate(R.layout.field, null);
+        // Add the new row before the add field button.
+        parentLinearLayout.addView(rowView, parentLinearLayout.getChildCount() - 1);
+    }
+    public void onDelete(View v) {
+        parentLinearLayout.removeView((View) v.getParent());
+    }
+
 
     @Override
     public void onClick(View v) {
@@ -329,9 +343,9 @@ boolean validate_reservation_number(EditText reserve)
 
                     }
 
-                    if(LoginActivity.token=="none")
+                    if(API.is_Token==false)
                     {
-                        Toast.makeText(Parkingreservation.this, "Login to reserve parking", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Parkingreservation_v2.this, "Login to reserve parking", Toast.LENGTH_SHORT).show();
                         Intent myIntent = new Intent(this,MainActivity.class);
                         this.startActivity(myIntent);//to jest wazne
 
@@ -344,18 +358,18 @@ boolean validate_reservation_number(EditText reserve)
                         Log.i(TAG, "onClick: check parking ID"+parkingID);
                         //region proces of postdata sending
                         RequestQueue MyRequestQueue = Volley.newRequestQueue(this);
-                        String url = "https://polar-plains-14145.herokuapp.com/reservation/add";
-                        StringRequest MyStringRequest = new StringRequest(com.android.volley.Request.Method.POST, url, new com.android.volley.Response.Listener<String>() {
+                        String url = "none";
+                        StringRequest MyStringRequest = new StringRequest(com.android.volley.Request.Method.POST, url, new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
                                 Log.i(TAG,"Response is: "+response);
-                                Toast.makeText(Parkingreservation.this, response, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(Parkingreservation_v2.this, response, Toast.LENGTH_SHORT).show();
                             }
                         }, new Response.ErrorListener() { //Create an error listener to handle errors appropriately.
                             @Override
                             public void onErrorResponse(VolleyError error) {
                                 Log.e(TAG,"Response is: "+error.getMessage());
-                                Toast.makeText(Parkingreservation.this, R.string.internet_error, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(Parkingreservation_v2.this, R.string.internet_error, Toast.LENGTH_SHORT).show();
 
                             }
                         }) {

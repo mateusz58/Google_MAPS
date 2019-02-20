@@ -16,7 +16,6 @@
         tools:context="com.compscitutorials.basigarcia.navigationdrawervideotutorial.Recycler_List.Booking_View_Fragment"
         />
 
-
 </android.support.v4.widget.SwipeRefreshLayout>
 
 

@@ -97,15 +97,20 @@ public class Mapfragment extends Fragment implements GoogleApiClient.ConnectionC
             public void onInfoWindowClick(Marker marker) {
                 LatLng latLon = marker.getPosition();
                 Log.i(TAG, "onInfoWindowClick: TRUE");
-                //Cycle through places array
-                for (Marker place : markerList) {
-                    if (latLon.equals(place.getPosition())) {
-                        Log.i(TAG, "onInfoWindowClick: ITERATION" + place.getTitle());
-                        Intent intent = new Intent(getActivity(), Parkingreservation.class);
-                        Parkingreservation.startActivity(getActivity(), place.getTitle());
+
+
+                    //Cycle through places array
+                    for (Marker place : markerList) {
+                        if (latLon.equals(place.getPosition())) {
+                            Log.i(TAG, "onInfoWindowClick: ITERATION" + place.getTitle());
+                            if(API.is_Token) {
+                                Intent intent = new Intent(getActivity(), Parkingreservation_v2.class);
+                                Parkingreservation_v2.startActivity(getActivity(), place.getTitle());
+                            }
+                        }
+
                     }
 
-                }
             }
         });
 

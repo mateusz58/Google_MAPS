@@ -30,20 +30,24 @@ import retrofit2.http.Path;
 public interface API_end_points {
 
     //// NO TOKEN GETTERS
-
-
     ///pobierz rezerwacje
-    @GET("api/booking")
+    @GET("api/booking/")
     Call<List<Booking>> getBooking();
 ///pobierz parkingi
     @GET("api/parking/")
     Call<List<Parking>> getParking();
 //pobierz samochody
-    @GET("api/car/logged")
+    @GET("api/car/")
     Call<List<Car>> getCar();
 ///pobierz rezerwacje car_booking
-    @GET("api/car_booking/logged")
+    @GET("api/car_booking/")
     Call<List<car_booking>> getcar_booking();
+
+
+///Get parkings list
+    @GET("api/parking/{id}")
+    Call<List<car_booking>> getParking_selected(@Path(value = "{id}", encoded = true) int id);
+
 //reset hasla
 
     //// TOKEN required
@@ -105,8 +109,7 @@ public interface API_end_points {
     ///Logowanie uzytkownika
     @FormUrlEncoded
     @POST("api-token-auth/")
-    Call<Response_Login> post_user_login(@Header("Authorization")
-                                              String token, @Field("username") String username, @Field("email") String email, @Field("password") String password);
+    Call<Response_Login> post_user_login(@Field("username") String username, @Field("email") String email, @Field("password") String password);
 
     //Password reset
     @FormUrlEncoded
@@ -125,11 +128,11 @@ public interface API_end_points {
 
     ///Zmiana rezerwacji
     @FormUrlEncoded
-    @PUT("api/car/{id}")
+    @PUT("api/car/logged/{id}")
     Call<Car> put_car(@Path(value = "{id}", encoded = true) int id,@Header("Authorization") String Token,@Field("status") String status);
 
     @FormUrlEncoded
-    @PUT("api/booking/{id}")
+    @PUT("api/booking/logged/{id}")
     Call<Booking> put_booking(@Path(value = "{id}", encoded = true) int id,@Header("Authorization") String Token,@Field("active") boolean active);
 
 

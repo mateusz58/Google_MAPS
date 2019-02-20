@@ -38,8 +38,7 @@ android {
         exclude 'META-INF/dependencies.txt'
         exclude 'META-INF/LGPL2.1'
     }
-    compileSdkVersion 25
-    buildToolsVersion '27.0.3'
+    compileSdkVersion 26
 
     testOptions {
         unitTests.returnDefaultValues = true
@@ -49,7 +48,7 @@ android {
     defaultConfig {
         applicationId "com.compscitutorials.basigarcia.navigationdrawervideotutorial"
         minSdkVersion 19
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
         multiDexEnabled = true
@@ -154,8 +153,7 @@ dependencies {
     //Recycler
 
     compile 'com.android.support:recyclerview-v7:25.3.1'
-
-
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 
 
 }

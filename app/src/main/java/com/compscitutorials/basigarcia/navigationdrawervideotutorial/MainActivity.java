@@ -1,7 +1,9 @@
 package com.compscitutorials.basigarcia.navigationdrawervideotutorial;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,15 +23,19 @@ import android.widget.Toast;
 
 //import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.FactoryAPI;
 //import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.FactoryAPIFactory;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.API_Errors.ErrorUtils;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.Recycler_List.Booking_View_Fragment;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.Recycler_List.Booking_View_Fragment.OnFragmentInteractionListener;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.TEMP.FactoryAPI;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.API_end_points;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.beans.Parking;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.Parking_Service;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.reponse.Response_Log_out;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.reponse.Response_Login;
 //import com.magnet.android.mms.MagnetMobileClient;
 //import com.magnet.android.mms.async.Call;
 
+import java.io.IOException;
 import java.util.List;
 
 import retrofit2.Call;
@@ -40,6 +46,10 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,OnFragmentInteractionListener {
 
    private Booking_View_Fragment booking_view_fragment;
+
+
+
+
 
 
 
@@ -145,11 +155,13 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        new GetParking().execute();
         setContentView(R.layout.activity_main);
         Log.w(TAG, "onCreate: ");
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, PERMISSION_READ_STATE);
-     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -162,10 +174,15 @@ public class MainActivity extends AppCompatActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
 
         //How to change elements in the header programatically
-        logintext = (TextView)findViewById(R.id.nav_logout);
+        logintext = (TextView) findViewById(R.id.nav_logout);
 
         getSupportActionBar().show();
         navigationView.setNavigationItemSelectedListener(this);
+
+
+
+
+
 
     }
 
@@ -184,22 +201,22 @@ public class MainActivity extends AppCompatActivity
           Log.w(TAG, "onStart: ");
 
           try {
+
               super.onStart();
-              if(LoginActivity.token!="none") {
+              if(API.is_Token==true) {
                   // navigationView.getMenu().getItem(2).setChecked(true);
                   navigationView.getMenu().getItem(2).setIcon(R.drawable.ic_no_encryption_black_24dp);
                   navigationView.getMenu().getItem(2).setTitle("Log out");
+                  navigationView.getMenu().getItem(R.id.nav_parkingplace).setEnabled(true);
 
               }
               else
               {
-
                   navigationView.getMenu().getItem(2).setIcon(R.drawable.ic_https_black_24dp);
                   navigationView.getMenu().getItem(2).setTitle("Sign in");
-
-
+                  navigationView.getMenu().getItem(R.id.nav_parkingplace).setEnabled(false);
               }
-              new GetParking().execute();
+
               booking_view_fragment=new Booking_View_Fragment();
 
           }catch(Exception ex)
@@ -207,8 +224,6 @@ public class MainActivity extends AppCompatActivity
               Log.d(TAG,ex.getMessage());
 
           }
-
-
       }
     @Override
     public void onBackPressed() {
@@ -225,6 +240,11 @@ public class MainActivity extends AppCompatActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         Log.w(TAG, "onCreateOptionsMenu: ");
         getMenuInflater().inflate(R.menu.main, menu);
+
+
+
+
+
         return true;
     }
 
@@ -264,11 +284,13 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_parkingplace) {
             Log.w(TAG, "onNavigationItemSelected: Restartactivity");
 
-            getSupportActionBar().show();
-            android.support.v4.app.FragmentTransaction fragmentTransaction =
-                  getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.fragment_container, booking_view_fragment);
-            fragmentTransaction.commit();
+
+                getSupportActionBar().show();
+                android.support.v4.app.FragmentTransaction fragmentTransaction =
+                        getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.fragment_container, booking_view_fragment);
+                fragmentTransaction.commit();
+
 //            Parkinghistory fragment = new Parkinghistory();
 //            //fragment.newInstance("BLA","BLA1");
 //            android.support.v4.app.FragmentTransaction fragmentTransaction =
@@ -278,9 +300,49 @@ public class MainActivity extends AppCompatActivity
 
 
 
-        } else if (id == R.id.nav_logout) {///przejscie do RestFramgnet
-            API.userid="0";
-            LoginActivity.token="none";
+        } else if (id == R.id.nav_logout) {
+
+
+            if(API.is_Token) {
+
+                //Magic is here at .execute() instead of .enqueue()
+                //Retrive token
+                SharedPreferences prefs = getSharedPreferences("Token.txt", MODE_PRIVATE);
+                String token = prefs.getString("Token", "default_value_here_if_string_is_missing");
+
+                API_end_points apiEndpoints = Parking_Service.getRetrofitInstance().create(API_end_points.class);
+                // Pobranie listy
+                Call<Response_Log_out> call = apiEndpoints.post_logout(token);
+                call.enqueue(new Callback<Response_Log_out>() {
+                    @Override
+                    public void onResponse(Call<Response_Log_out> call, Response<Response_Log_out> response) {
+                        if (response.isSuccessful()) {
+                            Response_Log_out response_log_out = response.body();
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<Response_Log_out> call, Throwable t) {
+
+                    }
+                });
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+
+                }
+                SharedPreferences prefs_temp = getSharedPreferences("Token.txt", MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs_temp.edit();
+                editor.putString("Email", "none");
+                editor.putString("Token", "Token" +"none");
+                editor.putString("User_id", "none");
+                editor.commit();
+            }
+
+
+            ///przejscie do RestFramgnet
+            API.is_Token=false;
             Intent myIntent = new Intent(this,LoginActivity.class);
             this.startActivity(myIntent);//to jest wazne
         } else if (id == R.id.nav_tools) {

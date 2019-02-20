@@ -14,6 +14,7 @@ import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -36,6 +37,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.API_Errors.ErrorUtils;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.API_Errors.Error_Response_Booking;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.API_Errors.Error_Response_Login;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.API_end_points;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.Parking_Service;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.reponse.Response_Login;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
@@ -52,9 +60,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.InjectView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static android.Manifest.permission.READ_CONTACTS;
+import static android.app.PendingIntent.getActivity;
 import static com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.Parking_Service.BASE_URL;
+import static junit.framework.Assert.assertTrue;
 
 public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
@@ -91,12 +104,15 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             }
         });
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        Button mChangepasswordbutton = (Button) findViewById(R.id.btn_reset_password);
+
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
             }
         });
+
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
@@ -278,11 +294,17 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         mEmailView.setAdapter(adapter);
     }
 
+    public void Switch_Paswword_Reset_activity(View view) {//////////Aktywnosc do tworzenia nowego okienka do
+
+        Intent myIntent = new Intent(this,Password_change_Activity.class);
+        this.startActivity(myIntent);//to jest wazne
+    }
     public void Switch_SignupActivity(View view) {//////////Aktywnosc do tworzenia nowego okienka do
 
         Intent myIntent = new Intent(this,SignupActivity.class);
         this.startActivity(myIntent);//to jest wazne
     }
+
 
     public void Reset_password(View view)
     {
@@ -322,52 +344,53 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         @Override
         protected Boolean doInBackground(Void... params) {
 
-            Log.w(TAG, "doInBackground:Initiated ");
+
             boolean result=false;
+            Log.w(TAG, "doInBackground:Initiated ");
+
             Log.i(TAG, "doInBackground: login "+mEmail);
             Log.i(TAG, "doInBackground: password "+mPassword);
             String TXTEMAIL=mEmail.replaceAll("[\\s()]+","");
             String TXTPASSWORD=mPassword.replaceAll("[\\s()]+","");
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost(BASE_URL+"api-token-auth/");
+
+
+
+            API_end_points apiEndpoints = Parking_Service.getRetrofitInstance().create(API_end_points.class);
+            // Pobranie listy
+            Call<Response_Login> call = apiEndpoints.post_user_login(TXTEMAIL, TXTEMAIL, TXTPASSWORD);
             try {
-                // Add your data
-                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-                nameValuePairs.add(new BasicNameValuePair("username", TXTEMAIL));
-                nameValuePairs.add(new BasicNameValuePair("password", TXTPASSWORD));
-                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-                // Execute HTTP Post Request
-                HttpResponse response = httpclient.execute(httppost);
-                StatusLine statusLine = response.getStatusLine();
-                String responseBody = EntityUtils.toString(response.getEntity());
-                Log.w(TAG, "doInBackground:Retrofit mobile client BEFORE CHECK Response Code: "+statusLine.getStatusCode());
-                if(statusLine.getStatusCode()==400)
+                //Magic is here at .execute() instead of .enqueue()
+                Response<Response_Login> response = call.execute();
+                Response_Login authResponse = response.body();
+
+                if (response.isSuccessful())
                 {
-                  Toast.makeText(LoginActivity.this,R.string.error_incorrect_password_or_login,Toast.LENGTH_SHORT).show();
+                    SharedPreferences prefs = getSharedPreferences("Token.txt", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putString("Email", authResponse.getEmail());
+                    editor.putString("Token", "Token " + authResponse.getToken());
+                    editor.putString("User_id", authResponse.getUserId().toString());
+                    editor.commit();
+                    API.is_Token=true;
+
+                    result = true;
+                    return result;
+
                 }
-                if(statusLine.getStatusCode()==200)
+                if (!response.isSuccessful())
                 {
-                    result=true;
-                    responseBody = responseBody.replaceAll("\"", "");
-                    responseBody = responseBody.replaceAll("\\{", "");
-                    responseBody = responseBody.replaceAll("\\}", "");
-                    responseBody = responseBody.replaceAll("token:", "");
-                    token=responseBody;
-                    Log.w(TAG, "doInBackground:Retrofit mobile client received Token: "+responseBody);
-                    Log.w(TAG, "doInBackground:Retrofit mobile client Response Code: "+statusLine.getStatusCode());
+
+                    result = false;
+                    return result;
                 }
-                Log.w(TAG, "doInBackground:Retrofit mobile client Response Code: "+statusLine.getStatusCode());
-            } catch (ClientProtocolException e) {
-                Toast.makeText(LoginActivity.this, R.string.internet_error, Toast.LENGTH_SHORT).show();
-                Log.e(TAG, "doInBackground:Retrofit mobile client Failure Response Code: "+e.toString());
+
+
             } catch (IOException e) {
-                Toast.makeText(LoginActivity.this, R.string.internet_error, Toast.LENGTH_SHORT).show();
-                Log.e(TAG, "doInBackground:Retrofit mobile client Failure Response Code: "+e.toString());
-            }
-            finally
-            {
+
+                Toast.makeText(LoginActivity.this,e.getMessage(),Toast.LENGTH_SHORT);
                 return result;
             }
+return result;
         }
         @Override
         protected void onPostExecute(final Boolean success) {
@@ -376,21 +399,19 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
             if (success) {
 
-                if ((token!="none")) {
+
                     Log.i("RESPONSE", "Successful login");
-//                    API.userid = myUser.getUserId().toString();
                     finish();
                     Intent myIntent = new Intent(LoginActivity.this, SplashScreen.class);
-                    LoginActivity.this.startActivity(myIntent);
 
-                } else {
+            }
+                else {
                     Log.i("RESPONSE", "Unsuccessful login");
                     DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             switch (which) {
                                 case DialogInterface.BUTTON_POSITIVE: {
-
                                     Intent myIntent = new Intent(LoginActivity.this, SignupActivity.class);
                                     LoginActivity.this.startActivity(myIntent);
                                 }
@@ -409,10 +430,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                     AlertDialog.Builder builder = new AlertDialog.Builder(this.mContext);
                     builder.setMessage(R.string.confirm_registry).setPositiveButton(R.string.yes, dialogClickListener).setNegativeButton(R.string.no, dialogClickListener).show();
                 }
-            } else {
-                Toast.makeText(LoginActivity.this,R.string.error_incorrect_password_or_login,Toast.LENGTH_SHORT).show();
             }
-        }
+
 
 
         @Override

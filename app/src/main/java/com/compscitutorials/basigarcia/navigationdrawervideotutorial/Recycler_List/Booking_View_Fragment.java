@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import android.support.v4.widget.SwipeRefreshLayout;
 
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.R;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.beans.Booking;
 
 import android.widget.Toast;
 import android.os.Handler;
@@ -72,7 +73,7 @@ public class Booking_View_Fragment extends Fragment {
     private Booking_View_Adapter mAdapter;
     private RecyclerViewScrollListener scrollListener;
 
-    private ArrayList<AbstractModel> modelList = new ArrayList<>();
+    private ArrayList<Booking> modelList = new ArrayList<>();
 
 
     public Booking_View_Fragment() {
@@ -234,10 +235,10 @@ public class Booking_View_Fragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String s) {
-                ArrayList<AbstractModel> filterList = new ArrayList<AbstractModel>();
+                ArrayList<Booking> filterList = new ArrayList<Booking>();
                 if (s.length() > 0) {
                     for (int i = 0; i < modelList.size(); i++) {
-                        if (modelList.get(i).getTitle().toLowerCase().contains(s.toString().toLowerCase())) {
+                        if (modelList.get(i).toString().toLowerCase().contains(s.toString().toLowerCase())) {
                             filterList.add(modelList.get(i));
                             mAdapter.updateList(filterList);
                         }
@@ -255,21 +256,21 @@ public class Booking_View_Fragment extends Fragment {
     private void setAdapter() {
 
 
-        modelList.add(new AbstractModel("Android", "Hello " + " Android"));
-        modelList.add(new AbstractModel("Beta", "Hello " + " Beta"));
-        modelList.add(new AbstractModel("Cupcake", "Hello " + " Cupcake"));
-        modelList.add(new AbstractModel("Donut", "Hello " + " Donut"));
-        modelList.add(new AbstractModel("Eclair", "Hello " + " Eclair"));
-        modelList.add(new AbstractModel("Froyo", "Hello " + " Froyo"));
-        modelList.add(new AbstractModel("Gingerbread", "Hello " + " Gingerbread"));
-        modelList.add(new AbstractModel("Honeycomb", "Hello " + " Honeycomb"));
-        modelList.add(new AbstractModel("Ice Cream Sandwich", "Hello " + " Ice Cream Sandwich"));
-        modelList.add(new AbstractModel("Jelly Bean", "Hello " + " Jelly Bean"));
-        modelList.add(new AbstractModel("KitKat", "Hello " + " KitKat"));
-        modelList.add(new AbstractModel("Lollipop", "Hello " + " Lollipop"));
-        modelList.add(new AbstractModel("Marshmallow", "Hello " + " Marshmallow"));
-        modelList.add(new AbstractModel("Nougat", "Hello " + " Nougat"));
-        modelList.add(new AbstractModel("Android O", "Hello " + " Android O"));
+//        modelList.add(new AbstractModel("Android", "Hello " + " Android"));
+//        modelList.add(new AbstractModel("Beta", "Hello " + " Beta"));
+//        modelList.add(new AbstractModel("Cupcake", "Hello " + " Cupcake"));
+//        modelList.add(new AbstractModel("Donut", "Hello " + " Donut"));
+//        modelList.add(new AbstractModel("Eclair", "Hello " + " Eclair"));
+//        modelList.add(new AbstractModel("Froyo", "Hello " + " Froyo"));
+//        modelList.add(new AbstractModel("Gingerbread", "Hello " + " Gingerbread"));
+//        modelList.add(new AbstractModel("Honeycomb", "Hello " + " Honeycomb"));
+//        modelList.add(new AbstractModel("Ice Cream Sandwich", "Hello " + " Ice Cream Sandwich"));
+//        modelList.add(new AbstractModel("Jelly Bean", "Hello " + " Jelly Bean"));
+//        modelList.add(new AbstractModel("KitKat", "Hello " + " KitKat"));
+//        modelList.add(new AbstractModel("Lollipop", "Hello " + " Lollipop"));
+//        modelList.add(new AbstractModel("Marshmallow", "Hello " + " Marshmallow"));
+//        modelList.add(new AbstractModel("Nougat", "Hello " + " Nougat"));
+//        modelList.add(new AbstractModel("Android O", "Hello " + " Android O"));
 
 
         mAdapter = new Booking_View_Adapter(getActivity(), modelList);
@@ -307,12 +308,9 @@ public class Booking_View_Fragment extends Fragment {
 
         mAdapter.SetOnItemClickListener(new Booking_View_Adapter.OnItemClickListener() {
             @Override
-            public void onItemClick(View view, int position, AbstractModel model) {
-
+            public void onItemClick(View view, int position, Booking model) {
                 //handle item click events here
-                Toast.makeText(getActivity(), "Hey " + model.getTitle(), Toast.LENGTH_SHORT).show();
-
-
+                Toast.makeText(getActivity(), "Hey " + model.getParking(), Toast.LENGTH_SHORT).show();
             }
         });
 

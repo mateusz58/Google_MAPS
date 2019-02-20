@@ -14,5 +14,7 @@ public class API {
     public static String URL="https://polar-plains-14145.herokuapp.com";
     public static String userid="1";
 
+    public static boolean is_Token=false;
+
 
 }

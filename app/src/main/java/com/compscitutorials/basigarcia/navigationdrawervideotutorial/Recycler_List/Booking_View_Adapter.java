@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import android.support.v7.widget.LinearLayoutManager;
 
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.R;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.beans.Booking;
 
 
 /**
@@ -21,17 +22,17 @@ import com.compscitutorials.basigarcia.navigationdrawervideotutorial.R;
 public class Booking_View_Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context mContext;
-    private ArrayList<AbstractModel> modelList;
+    private ArrayList<Booking> modelList;
 
     private OnItemClickListener mItemClickListener;
 
 
-    public Booking_View_Adapter(Context context, ArrayList<AbstractModel> modelList) {
+    public Booking_View_Adapter(Context context, ArrayList<Booking> modelList) {
         this.mContext = context;
         this.modelList = modelList;
     }
 
-    public void updateList(ArrayList<AbstractModel> modelList) {
+    public void updateList(ArrayList<Booking> modelList) {
         this.modelList = modelList;
         notifyDataSetChanged();
 
@@ -50,11 +51,11 @@ public class Booking_View_Adapter extends RecyclerView.Adapter<RecyclerView.View
 
         //Here you can fill your row view
         if (holder instanceof ViewHolder) {
-            final AbstractModel model = getItem(position);
+            final Booking model = getItem(position);
             ViewHolder genericViewHolder = (ViewHolder) holder;
 
-            genericViewHolder.itemTxtTitle.setText(model.getTitle());
-            genericViewHolder.itemTxtMessage.setText(model.getMessage());
+            genericViewHolder.itemTxtTitle.setText(model.toString());
+            genericViewHolder.itemTxtMessage.setText(model.toString());
 
 
         }
@@ -71,13 +72,13 @@ public class Booking_View_Adapter extends RecyclerView.Adapter<RecyclerView.View
         this.mItemClickListener = mItemClickListener;
     }
 
-    private AbstractModel getItem(int position) {
+    private Booking getItem(int position) {
         return modelList.get(position);
     }
 
 
     public interface OnItemClickListener {
-        void onItemClick(View view, int position, AbstractModel model);
+        void onItemClick(View view, int position, Booking model);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
