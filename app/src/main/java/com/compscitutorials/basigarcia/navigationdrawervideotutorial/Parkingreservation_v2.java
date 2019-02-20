@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -34,12 +35,28 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import butterknife.InjectView;
+
+import static android.text.Selection.setSelection;
+
 
 public class Parkingreservation_v2 extends AppCompatActivity implements View.OnClickListener {
+
+
+    TextView _loginLink;
+
+
+
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     //time
 
     private LinearLayout parentLinearLayout;
+
+    private LinearLayout reserveLinearLayout;
+
+    EditText edittext_var ;
+
+    private LinearLayout layout_reserve;
 
     private static final String parkingIDparam = "ParkingID";
 
@@ -145,12 +162,18 @@ boolean validate_reservation_number(EditText reserve)
         context.startActivity(intent);
     }
 
+
+    @InjectView(R.id.layout_reserve) LinearLayout _layout_reserve;
+    @InjectView(R.id.number_edit_text) EditText _number_edit_text;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_parkingreservation_v2);
 
         parentLinearLayout = (LinearLayout) findViewById(R.id.layout_dynamic_view_list);
+
+
+        reserveLinearLayout=(LinearLayout) findViewById(R.id.layout_reserve);
 
         Bundle extras = getIntent().getExtras();
 //        parkingID=extras.getString(parkingIDparam);
@@ -161,6 +184,7 @@ boolean validate_reservation_number(EditText reserve)
         txtTime_start =(EditText)findViewById(R.id.in_start_time);
         reserve =(EditText)findViewById(R.id.in_reserve);
 
+        edittext_var=(EditText)findViewById(R.id.number_edit_text);
 
         txtDate_end =(EditText)findViewById(R.id.in_end_date);
         txtTime_end =(EditText)findViewById(R.id.in_end_time);
@@ -169,7 +193,6 @@ boolean validate_reservation_number(EditText reserve)
         btnDatePicker.setOnClickListener(this);
         btnTimePicker.setOnClickListener(this);
 
-
         ///PLATE LIST
 
 //        adapter=new ArrayAdapter<String>(this,
@@ -177,17 +200,58 @@ boolean validate_reservation_number(EditText reserve)
 //                listItems);
 //        setListAdapter(adapter);
 
+        edittext_var.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    reserveLinearLayout.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    edittext_var = (EditText)((View) v.getParent()).findViewById(R.id.number_edit_text) ;
+                    reserveLinearLayout.setVisibility(View.GONE);
+                }
+            }
+        });
 
     }
-
+//    public void onSelect(View v) { // on click event for a SELECT button
+//
+//
+////        System.out.println(“The text is = “+ et.getText());
+//    }
     public void onAddField(View v) {
+
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View rowView = inflater.inflate(R.layout.field, null);
+
         // Add the new row before the add field button.
         parentLinearLayout.addView(rowView, parentLinearLayout.getChildCount() - 1);
     }
     public void onDelete(View v) {
         parentLinearLayout.removeView((View) v.getParent());
+    }
+
+//
+//    @Override
+//    public void onSelectionChanged(int start, int end) {
+//
+//        CharSequence text = (CharSequence) getText();
+//        if (text != null) {
+//            if (start != text.length() || end != text.length()) {
+//                setSelection(text.length(), text.length());
+//                return;
+//            }
+//        }
+//        super.onSelectionChanged(start, end);
+//    }
+
+
+    @Override
+    public void onBackPressed() {
+
+
+        moveTaskToBack(true);
     }
 
 
@@ -198,11 +262,11 @@ boolean validate_reservation_number(EditText reserve)
             switch (v.getId()) {
 
 
+
                 case R.id.btn_start:///start
 
                 {
                     Log.i(TAG, "onClick: btn_start");
-
 
                     Calendar c = Calendar.getInstance();
                     mYear = c.get(Calendar.YEAR);
@@ -224,15 +288,11 @@ boolean validate_reservation_number(EditText reserve)
                     START.setYear(mYear);
                     START.setMonth(mMonth);
                     START.setDate(mDay);
-
                     datePickerDialog.getDatePicker().setMinDate(c.getTimeInMillis());
                     datePickerDialog.show();
-
                     c = Calendar.getInstance();
                     mHour = c.get(Calendar.HOUR_OF_DAY);
                     mMinute = c.get(Calendar.MINUTE);
-
-
                     // Launch Time Picker Dialog
                     TimePickerDialog timePickerDialog = new TimePickerDialog(this,
                             new TimePickerDialog.OnTimeSetListener() {
@@ -256,8 +316,6 @@ boolean validate_reservation_number(EditText reserve)
                     timePickerDialog.show();
                 }
                 break;
-
-
 
                 case R.id.btn_end: { ////end
 
