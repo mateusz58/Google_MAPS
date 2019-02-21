@@ -54,8 +54,8 @@ public class Booking_View_Adapter extends RecyclerView.Adapter<RecyclerView.View
             final car_booking model = getItem(position);
             ViewHolder genericViewHolder = (ViewHolder) holder;
 
-            genericViewHolder.itemTxtTitle.setText(model.toString());
-            genericViewHolder.itemTxtMessage.setText(model.toString());
+            genericViewHolder.itemTxtTitle.setText(model.getId().toString());
+            genericViewHolder.itemTxtMessage.setText(model.getParkingName());
 
 
         }
@@ -91,10 +91,10 @@ public class Booking_View_Adapter extends RecyclerView.Adapter<RecyclerView.View
 
         // @BindView(R.id.img_user)
         // ImageView imgUser;
-        // @BindView(R.id.item_txt_title)
-        // TextView itemTxtTitle;
-        // @BindView(R.id.item_txt_message)
-        // TextView itemTxtMessage;
+//         @BindView(R.id.item_txt_title)
+//         TextView itemTxtTitle;
+//         @BindView(R.id.item_txt_message)
+//         TextView itemTxtMessage;
         // @BindView(R.id.radio_list)
         // RadioButton itemTxtMessage;
         // @BindView(R.id.check_list)
@@ -122,9 +122,6 @@ public class Booking_View_Adapter extends RecyclerView.Adapter<RecyclerView.View
                     ///executed after method on_click in booking_view_fragment
 
                         Log.i(getClass().getSimpleName(), "ViewHolder");
-
-
-
 
                 }
             });
