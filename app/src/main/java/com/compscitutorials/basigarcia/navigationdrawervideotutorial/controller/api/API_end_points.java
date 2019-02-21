@@ -16,6 +16,7 @@ import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.repon
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.reponse.Response_Password_reset;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.reponse.Response_Register;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -61,7 +62,7 @@ public interface API_end_points {
                                          String token);
 
     @GET("api/car_booking/logged")
-    Call<List<car_booking>> getcar_booking_token(@Header("Authorization")
+    Call<ArrayList<car_booking>> getcar_booking_token(@Header("Authorization")
                                                          String token);
 ////////{POST booking
 

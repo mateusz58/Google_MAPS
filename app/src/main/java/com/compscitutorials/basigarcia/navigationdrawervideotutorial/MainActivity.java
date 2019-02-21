@@ -1,7 +1,6 @@
 package com.compscitutorials.basigarcia.navigationdrawervideotutorial;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -23,19 +22,23 @@ import android.widget.Toast;
 
 //import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.FactoryAPI;
 //import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.FactoryAPIFactory;
-import com.compscitutorials.basigarcia.navigationdrawervideotutorial.API_Errors.ErrorUtils;
-import com.compscitutorials.basigarcia.navigationdrawervideotutorial.Recycler_List.Booking_View_Fragment;
-import com.compscitutorials.basigarcia.navigationdrawervideotutorial.Recycler_List.Booking_View_Fragment.OnFragmentInteractionListener;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.Recycler_List_car_booking.Booking_View_Fragment;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.Recycler_List_car_booking.Booking_View_Fragment.OnFragmentInteractionListener;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.TEMP.FactoryAPI;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.API_end_points;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.beans.Parking;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.Parking_Service;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.beans.car_booking;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.reponse.Response_Log_out;
-import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.reponse.Response_Login;
 //import com.magnet.android.mms.MagnetMobileClient;
 //import com.magnet.android.mms.async.Call;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -45,17 +48,12 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,OnFragmentInteractionListener {
 
-   private Booking_View_Fragment booking_view_fragment;
 
 
 
+   private static Booking_View_Fragment booking_view_fragment;
 
-
-
-
-
-
-    private final String TAG="MainActivity";
+    private static final String TAG="MainActivity";
     ////TRASES
     public static FactoryAPI Parking_list;
      public static API_end_points service;
@@ -66,10 +64,18 @@ public class MainActivity extends AppCompatActivity
     Toolbar toolbar = null;
     ImageButton floatButton;
 
+    private String Token;
+
     final int PERMISSION_READ_STATE=1;
     public static List<Parking> parking_list;
 
-    final String url="http://polar-plains-14145.herokuapp.com/parks/";
+    private ArrayList<car_booking>  car_booking_list;
+
+
+
+
+//    public static List<car_booking> car_booking_list;
+
 
     @Override
     public void onFragmentInteraction(Uri uri) {
@@ -78,6 +84,96 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+
+    public class Getcar_booking extends AsyncTask<Void, Void, String> implements Serializable {
+
+        @Override
+        protected String doInBackground(Void... params) {
+
+            result = "1";
+            try {
+
+                Log.w(TAG, "doInBackground:Retrofit mobile client initialization ");
+                API_end_points service = Parking_Service.getRetrofitInstance().create(API_end_points.class);
+                Call<ArrayList<car_booking>> call = service.getcar_booking_token(Token);
+                call.enqueue(new Callback<ArrayList<car_booking>>() {
+                    @Override
+                    public void onResponse(Call<ArrayList<car_booking>> call, Response<ArrayList<car_booking>> response) {
+
+
+                        if (!response.isSuccessful()) {
+                            Log.w(TAG, "doInBackground:Retrofit mobile client Response Code: "+response.code());
+                            Log.w(TAG, "doInBackground:Retrofit mobile client Response message: "+response.message());
+                            Toast.makeText(MainActivity.this, R.string.internet_error, Toast.LENGTH_SHORT).show();
+                        }
+                        else
+                            {
+
+                            result="1";
+                                try {
+                                    car_booking_list=response.body();
+                                    String filePath = getApplicationContext().getFilesDir().getPath().toString() + "/car_booking.tmp";
+                                    File car_booking_file = new File(filePath);
+                                    car_booking_file.createNewFile(); // if file already exists will do nothing
+                                    FileOutputStream fos = new FileOutputStream(filePath);
+                                    ObjectOutputStream oos = new ObjectOutputStream(fos);
+                                    oos.writeObject(car_booking_list);
+                                    oos.close();
+                                } catch (IOException e) {
+                                    Log.e(getClass().getSimpleName(), "Exception handled", e);
+                                }
+
+
+                            }
+                    }
+                    @Override
+                    public void onFailure(Call<ArrayList<car_booking>> call, Throwable t) {
+
+                        Log.e(TAG, "doInBackground:Retrofit mobile client Failure JS: "+t.getMessage());
+                        result = "0";
+                    }
+                });
+            } catch (Exception e) {
+
+                Log.e(TAG, e.getMessage(), e);
+                result = "0";
+
+            } finally {
+
+                Log.i(TAG, "doInBackground:out value"+result);
+
+
+                return result;
+
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String out) {
+
+            Log.w(TAG, "onPostExecute:Map initialization ");
+            //Log.w("JSON", "Lista pobranych wspolrzednych" + out);
+            try {
+                if(out=="1") {
+//                    String filePath = getApplicationContext().getFilesDir().getPath().toString() + "/car_booking.tmp";
+//                    File yourFile = new File(filePath);
+//                    yourFile.createNewFile(); // if file already exists will do nothing
+//                    FileOutputStream fos = new FileOutputStream(filePath);
+//                    ObjectOutputStream oos = new ObjectOutputStream(fos);
+//                    oos.writeObject(car_booking_list);
+//                    oos.close();
+//
+//                    FileInputStream fis = new FileInputStream(filePath);
+//                    ObjectInputStream ois = new ObjectInputStream(fis);
+//                    ois.close();
+//                    List<car_booking> check = (List<car_booking>) ois.readObject();
+
+                }
+            } catch (Exception e) {
+                Log.v(TAG, e.toString());
+            }
+        }
+    }
 
     class GetParking extends AsyncTask<Void, Void, String> {
         @Override
@@ -155,14 +251,20 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SharedPreferences prefs = getSharedPreferences("Token.txt",MODE_PRIVATE);
+        Token = prefs.getString("Token",null);
+
+        if(Token!=null)
+        {
+            new Getcar_booking().execute();
+        }
         new GetParking().execute();
         setContentView(R.layout.activity_main);
         Log.w(TAG, "onCreate: ");
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, PERMISSION_READ_STATE);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -201,9 +303,10 @@ public class MainActivity extends AppCompatActivity
           Log.w(TAG, "onStart: ");
 
           try {
-
+              SharedPreferences prefs = getSharedPreferences("Token.txt",MODE_PRIVATE);
+             Token = prefs.getString("Token",null);
               super.onStart();
-              if(API.is_Token==true) {
+              if(Token!=null) {
                   // navigationView.getMenu().getItem(2).setChecked(true);
                   navigationView.getMenu().getItem(2).setIcon(R.drawable.ic_no_encryption_black_24dp);
                   navigationView.getMenu().getItem(2).setTitle("Log out");
@@ -216,8 +319,6 @@ public class MainActivity extends AppCompatActivity
                   navigationView.getMenu().getItem(2).setTitle("Sign in");
                   navigationView.getMenu().getItem(R.id.nav_parkingplace).setEnabled(false);
               }
-
-              booking_view_fragment=new Booking_View_Fragment();
 
           }catch(Exception ex)
           {
@@ -241,10 +342,6 @@ public class MainActivity extends AppCompatActivity
         Log.w(TAG, "onCreateOptionsMenu: ");
         getMenuInflater().inflate(R.menu.main, menu);
 
-
-
-
-
         return true;
     }
 
@@ -255,11 +352,18 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
+
+            SharedPreferences prefs = getSharedPreferences("Token.txt",MODE_PRIVATE);
+            String token = prefs.getString("Token",null);
+
+            if(token!=null)
+            {
+                new Getcar_booking().execute();
+            }
             ////pobierana lista zarezherwowanyc parkingow
             new GetParking().execute();
             return true;
         }
-
         if (id == R.id.action_search) {
            // Toast.makeText(this, "Searching", Toast.LENGTH_SHORT).show();
             return true;
@@ -286,9 +390,11 @@ public class MainActivity extends AppCompatActivity
 
 
                 getSupportActionBar().show();
+
+                Booking_View_Fragment fragment=new Booking_View_Fragment();
                 android.support.v4.app.FragmentTransaction fragmentTransaction =
                         getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.fragment_container, booking_view_fragment);
+                fragmentTransaction.replace(R.id.fragment_container, fragment);
                 fragmentTransaction.commit();
 
 //            Parkinghistory fragment = new Parkinghistory();
@@ -303,12 +409,15 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_logout) {
 
 
-            if(API.is_Token) {
+            SharedPreferences prefs = getSharedPreferences("Token.txt",MODE_PRIVATE);
+            String token = prefs.getString("Token",null);
+
+
+            if(API.is_Token=false) {
 
                 //Magic is here at .execute() instead of .enqueue()
                 //Retrive token
-                SharedPreferences prefs = getSharedPreferences("Token.txt", MODE_PRIVATE);
-                String token = prefs.getString("Token", "default_value_here_if_string_is_missing");
+
 
                 API_end_points apiEndpoints = Parking_Service.getRetrofitInstance().create(API_end_points.class);
                 // Pobranie listy
@@ -332,14 +441,13 @@ public class MainActivity extends AppCompatActivity
                 } catch (InterruptedException e) {
 
                 }
-                SharedPreferences prefs_temp = getSharedPreferences("Token.txt", MODE_PRIVATE);
-                SharedPreferences.Editor editor = prefs_temp.edit();
-                editor.putString("Email", "none");
-                editor.putString("Token", "Token" +"none");
-                editor.putString("User_id", "none");
+
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString("Email", null);
+                editor.putString("Token", null);
+                editor.putString("User_id", null);
                 editor.commit();
             }
-
 
             ///przejscie do RestFramgnet
             API.is_Token=false;

@@ -1,25 +1,40 @@
-package com.compscitutorials.basigarcia.navigationdrawervideotutorial.Recycler_List;
+package com.compscitutorials.basigarcia.navigationdrawervideotutorial.Recycler_List_car_booking;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import android.support.v7.widget.LinearLayoutManager;
 
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import android.support.v4.widget.SwipeRefreshLayout;
 
+
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.R;
-import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.beans.Booking;
+//import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.beans.Booking;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.API_end_points;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.Parking_Service;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.beans.Car;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.beans.car_booking;
 
 import android.widget.Toast;
 import android.os.Handler;
@@ -37,17 +52,83 @@ import android.text.Spanned;
 import android.view.ViewGroup;
 import android.view.MenuInflater;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link Booking_View_Fragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link Booking_View_Fragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import static android.content.Context.MODE_PRIVATE;
+
+
 
 
 public class Booking_View_Fragment extends Fragment {
+
+
+    private static final String TAG="Booking_View_Fragment";
+
+    public Booking_View_Fragment() {
+        // Required empty public constructor
+    }
+
+    public class Getcar_booking extends AsyncTask<Void, Void, String>{
+        @Override
+        protected String doInBackground(Void... params)  {
+
+
+            SharedPreferences prefs = getContext().getSharedPreferences("Token.txt", MODE_PRIVATE);
+            String Token = prefs.getString("Token", null);
+
+            String result = "1";
+            try {
+
+                Log.w(TAG, "doInBackground:Retrofit mobile client initialization ");
+                API_end_points service = Parking_Service.getRetrofitInstance().create(API_end_points.class);
+                Call<ArrayList<car_booking>> call = service.getcar_booking_token(Token);
+                call.enqueue(new Callback<ArrayList<car_booking>>() {
+                    @Override
+                    public void onResponse(Call<ArrayList<car_booking>> call, Response<ArrayList<car_booking>> response) {
+
+
+                        if (!response.isSuccessful()) {
+                            Log.w(TAG, "doInBackground:Retrofit mobile client Response Code: " + response.code());
+                            Log.w(TAG, "doInBackground:Retrofit mobile client Response message: " + response.message());
+                            Toast.makeText(getContext(), R.string.internet_error, Toast.LENGTH_SHORT).show();
+                        } else {
+
+                            try {
+
+                                String filePath = getContext().getFilesDir().getPath().toString() + "/car_booking.tmp";
+                                File car_booking_file = new File(filePath);
+                                car_booking_file.createNewFile(); // if file already exists will do nothing
+                                FileOutputStream fos = new FileOutputStream(filePath);
+                                ObjectOutputStream oos = new ObjectOutputStream(fos);
+                                oos.writeObject(response.body());
+                                oos.close();
+                            } catch (IOException e) {
+                                Log.e(getClass().getSimpleName(), "Exception handled", e);
+                            }
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ArrayList<car_booking>> call, Throwable t) {
+
+                        Log.e(TAG, "doInBackground:Retrofit mobile client Failure JS: " + t.getMessage());
+                    }
+                });
+            } catch (Exception e) {
+
+                Log.e(TAG, e.getMessage(), e);
+                result = "0";
+
+            } finally {
+                Log.i(TAG, "doInBackground:out value" + result);
+                return result;
+            }
+        }
+    }
+
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -64,21 +145,14 @@ public class Booking_View_Fragment extends Fragment {
 
     // @BindView(R.id.recycler_view)
     // RecyclerView recyclerView;
-
-
-    // @BindView(R.id.swipe_refresh_recycler_list)
-    // SwipeRefreshLayout swipeRefreshRecyclerList;
+//    @BindView(R.id.swipe_refresh_recycler_list)
+//    SwipeRefreshLayout swipeRefreshRecyclerList;
 
     private SwipeRefreshLayout swipeRefreshRecyclerList;
     private Booking_View_Adapter mAdapter;
     private RecyclerViewScrollListener scrollListener;
 
-    private ArrayList<Booking> modelList = new ArrayList<>();
-
-
-    public Booking_View_Fragment() {
-        // Required empty public constructor
-    }
+    public ArrayList<car_booking> modelList = new ArrayList<>();
 
     /**
      * Use this factory method to create a new instance of
@@ -127,8 +201,6 @@ public class Booking_View_Fragment extends Fragment {
         return view;
 
     }
-
-
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -139,6 +211,7 @@ public class Booking_View_Fragment extends Fragment {
             @Override
             public void onRefresh() {
 
+                new Getcar_booking().execute();
                 // Do your stuff on refresh
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -235,7 +308,7 @@ public class Booking_View_Fragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String s) {
-                ArrayList<Booking> filterList = new ArrayList<Booking>();
+                ArrayList<car_booking> filterList = new ArrayList<car_booking>();
                 if (s.length() > 0) {
                     for (int i = 0; i < modelList.size(); i++) {
                         if (modelList.get(i).toString().toLowerCase().contains(s.toString().toLowerCase())) {
@@ -255,6 +328,8 @@ public class Booking_View_Fragment extends Fragment {
 
     private void setAdapter() {
 
+//        modelList.add(new AbstractModel("Android", "Hello " + " Android"));
+
 
 //        modelList.add(new AbstractModel("Android", "Hello " + " Android"));
 //        modelList.add(new AbstractModel("Beta", "Hello " + " Beta"));
@@ -273,20 +348,31 @@ public class Booking_View_Fragment extends Fragment {
 //        modelList.add(new AbstractModel("Android O", "Hello " + " Android O"));
 
 
-        mAdapter = new Booking_View_Adapter(getActivity(), modelList);
+        try {
+//            modelList=
+//
+            String filePath = getContext().getFilesDir().getPath().toString() + "/car_booking.tmp";
+                    FileInputStream fis = new FileInputStream(filePath);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            modelList = (ArrayList<car_booking>) ois.readObject();
+            ois.close();
 
-        recyclerView.setHasFixedSize(true);
+            mAdapter = new Booking_View_Adapter(getActivity(), modelList);
 
-        // use a linear layout manager
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(layoutManager);
+            recyclerView.setHasFixedSize(true);
 
+            // use a linear layout manager
+            LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+            recyclerView.setLayoutManager(layoutManager);
 
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());
-        dividerItemDecoration.setDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.booking_divider_recyclerview));
-        recyclerView.addItemDecoration(dividerItemDecoration);
+            DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());
+            dividerItemDecoration.setDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.booking_divider_recyclerview));
+            recyclerView.addItemDecoration(dividerItemDecoration);
 
-        recyclerView.setAdapter(mAdapter);
+            recyclerView.setAdapter(mAdapter);
+        } catch (Exception e) {
+            Log.e(getClass().getSimpleName(), "Exception handled", e);
+        }
 
 
         scrollListener = new RecyclerViewScrollListener() {
@@ -308,9 +394,22 @@ public class Booking_View_Fragment extends Fragment {
 
         mAdapter.SetOnItemClickListener(new Booking_View_Adapter.OnItemClickListener() {
             @Override
-            public void onItemClick(View view, int position, Booking model) {
+            public void onItemClick(View view, int position, car_booking model) {
                 //handle item click events here
                 Toast.makeText(getActivity(), "Hey " + model.getParking(), Toast.LENGTH_SHORT).show();
+
+                try {
+                    List<Car>car_temp=modelList.get(position).getBooking();
+                    String filePath = getContext().getFilesDir().getPath().toString() + "/car.tmp";
+                    File car_file = new File(filePath);
+                    car_file.createNewFile(); // if file already exists will do nothing
+                    FileOutputStream fos = new FileOutputStream(filePath);
+                    ObjectOutputStream oos = new ObjectOutputStream(fos);
+                    oos.writeObject(car_temp);
+                    oos.close();
+                } catch (IOException e) {
+                    Log.e(getClass().getSimpleName(), "Exception handled", e);
+                }
             }
         });
 
@@ -334,3 +433,4 @@ public class Booking_View_Fragment extends Fragment {
     }
 
 }
+

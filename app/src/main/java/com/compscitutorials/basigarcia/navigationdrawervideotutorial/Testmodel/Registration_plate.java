@@ -1,8 +1,8 @@
 package com.compscitutorials.basigarcia.navigationdrawervideotutorial.Testmodel;
 
-public class Model {
+public class Registration_plate {
     String name;
-    public Model(String name) {
+    public Registration_plate(String name) {
         this.name = name;
     }
 

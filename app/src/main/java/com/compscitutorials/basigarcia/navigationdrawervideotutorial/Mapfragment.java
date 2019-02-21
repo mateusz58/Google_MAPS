@@ -2,6 +2,8 @@ package com.compscitutorials.basigarcia.navigationdrawervideotutorial;
 
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -10,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,7 +20,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.TEMP._ParkingsResult;
@@ -81,39 +86,66 @@ public class Mapfragment extends Fragment implements GoogleApiClient.ConnectionC
             if (parking_list.get(i).getfree_places().equals(0)) {
 
                 MarkerOptions userIndicator = new MarkerOptions()
-                        .position(new LatLng((parking_list.get(i).getX()), parking_list.get(i).getY())).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)).title(miasto+" "+Ulica+" "+" "+getResources().getString(R.string.free_places)+":"+ parking_list.get(i).getfree_places().toString());
+                        .position(new LatLng((parking_list.get(i).getX()), parking_list.get(i).getY())).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)).title("City"+miasto + "\nStreet:" + Ulica + " " +"\n " + getResources().getString(R.string.free_places) + "" + parking_list.get(i).getfree_places().toString());
                 temp = map.addMarker(userIndicator);
                 markerList.add(temp);
             }
             else {
                 MarkerOptions userIndicator = new MarkerOptions()
-                        .position(new LatLng((parking_list.get(i).getX()), parking_list.get(i).getY())).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)).title(miasto + " " + Ulica + " " +" " + getResources().getString(R.string.free_places) + ":" + parking_list.get(i).getfree_places().toString());
+                        .position(new LatLng((parking_list.get(i).getX()), parking_list.get(i).getY())).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)).title("City: "+miasto + "\nStreet: " + Ulica + " " +"\n " + getResources().getString(R.string.free_places) + " " + parking_list.get(i).getfree_places().toString());
+
+                userIndicator.snippet(parking_list.get(i).getid().toString());
                 temp = map.addMarker(userIndicator);
+
                 markerList.add(temp);
             }
         }
+        map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
+            @Override
+            public View getInfoWindow(Marker arg0) {
+                return null;
+            }
+
+            @Override
+            public View getInfoContents(Marker marker) {
+
+                LinearLayout info = new LinearLayout(getContext());
+                info.setOrientation(LinearLayout.VERTICAL);
+
+                TextView title = new TextView(getContext());
+                title.setTextColor(Color.BLACK);
+                title.setGravity(Gravity.CENTER);
+                title.setTypeface(null, Typeface.BOLD);
+                title.setText(marker.getTitle());
+
+                TextView snippet = new TextView(getContext());
+                snippet.setTextColor(Color.GRAY);
+                snippet.setText(marker.getSnippet());
+
+                info.addView(title);
+                info.addView(snippet);
+
+                return info;
+            }
+        });
         map.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
                 LatLng latLon = marker.getPosition();
                 Log.i(TAG, "onInfoWindowClick: TRUE");
-
-
                     //Cycle through places array
                     for (Marker place : markerList) {
                         if (latLon.equals(place.getPosition())) {
                             Log.i(TAG, "onInfoWindowClick: ITERATION" + place.getTitle());
                             if(API.is_Token) {
                                 Intent intent = new Intent(getActivity(), Parkingreservation_v2.class);
-                                Parkingreservation_v2.startActivity(getActivity(), place.getTitle());
+                                Parkingreservation_v2.startActivity(getActivity(), place.getSnippet());
                             }
                         }
-
                     }
-
             }
         });
-
     }
 
     @Override
@@ -388,7 +420,6 @@ public class Mapfragment extends Fragment implements GoogleApiClient.ConnectionC
         Toast.makeText(getActivity(),R.string.internet_error, Toast.LENGTH_SHORT).show();
 
     }
-
     @Override
     public void onConnected(Bundle arg0) {
 
@@ -397,7 +428,6 @@ public class Mapfragment extends Fragment implements GoogleApiClient.ConnectionC
         display_My_Location();
 
     }
-
     @Override
     public void onConnectionSuspended(int arg0) {
         mGoogleApiClient.connect();
@@ -405,7 +435,6 @@ public class Mapfragment extends Fragment implements GoogleApiClient.ConnectionC
 
     @Override
     public void onClick(View v) {
-
         try {
             switch (v.getId()) {
                 case R.id.btnShowLocation:
@@ -413,20 +442,14 @@ public class Mapfragment extends Fragment implements GoogleApiClient.ConnectionC
                     marker.remove();
                     display_My_Location();
                     break;
-
             }
         } catch (Exception e) {
             Log.e("TAG", e.getMessage());
         }
-
-
     }
-
     @Override
     public boolean onMarkerClick(Marker marker) {
-
         Log.i(TAG, "onMarkerClick: infowindow in not show");
-
         return true;
     }
 }

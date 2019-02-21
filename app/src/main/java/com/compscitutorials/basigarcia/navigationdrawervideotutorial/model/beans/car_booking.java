@@ -32,7 +32,7 @@
             private Integer numberOfCars;
             @SerializedName("booking")
             @Expose
-            private List<Booking> booking = new ArrayList<Booking>();
+            private List<Car> booking = new ArrayList<Car>();
             @SerializedName("Date_From")
             @Expose
             private String dateFrom;
@@ -75,7 +75,7 @@
              * @param user
              * @param cost
              */
-            public car_booking(Integer id, Integer parking, Float cost, Integer user, Integer numberOfCars, List<Booking> booking, String dateFrom, String dateTo, Boolean active, String parkingName, String parkingStreet, String parkingCity) {
+            public car_booking(Integer id, Integer parking, Float cost, Integer user, Integer numberOfCars, List<Car> booking, String dateFrom, String dateTo, Boolean active, String parkingName, String parkingStreet, String parkingCity) {
                 super();
                 this.id = id;
                 this.parking = parking;
@@ -90,6 +90,9 @@
                 this.parkingStreet = parkingStreet;
                 this.parkingCity = parkingCity;
             }
+
+
+
 
             public Integer getId() {
                 return id;
@@ -156,15 +159,15 @@
                 return this;
             }
 
-            public List<Booking> getBooking() {
+            public List<Car> getBooking() {
                 return booking;
             }
 
-            public void setBooking(List<Booking> booking) {
+            public void setBooking(List<Car> booking) {
                 this.booking = booking;
             }
 
-            public car_booking withBooking(List<Booking> booking) {
+            public car_booking withBooking(List<Car> booking) {
                 this.booking = booking;
                 return this;
             }

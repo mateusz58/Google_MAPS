@@ -402,8 +402,8 @@ return result;
 
                     Log.i("RESPONSE", "Successful login");
                     finish();
-                    Intent myIntent = new Intent(LoginActivity.this, SplashScreen.class);
-
+                    Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
+                LoginActivity.this.startActivity(myIntent);
             }
                 else {
                     Log.i("RESPONSE", "Unsuccessful login");

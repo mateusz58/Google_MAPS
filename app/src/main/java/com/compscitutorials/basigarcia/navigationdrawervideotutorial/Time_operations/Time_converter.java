@@ -21,4 +21,15 @@ public class Time_converter {
         System.out.println(date);
         return date;
     }
+    public static String convert_string(String input) throws ParseException {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        Date date = formatter.parse(input);
+        String folderName = formatter.format(input);
+
+        System.out.println(date);
+        return folderName;
+    }
+
+
+
 }

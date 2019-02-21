@@ -10,24 +10,24 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.compscitutorials.basigarcia.navigationdrawervideotutorial.Testmodel.Model;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.Testmodel.Registration_plate;
 
 import java.util.ArrayList;
 
-public class CustomAdapter extends BaseAdapter {
+public class Registration_plate_list_adapter extends BaseAdapter {
         Context context;
-        ArrayList<Model> itemModelList;
-        public CustomAdapter(Context context, ArrayList<Model> modelList) {
+        ArrayList<Registration_plate> itemRegistrationplateList;
+        public Registration_plate_list_adapter(Context context, ArrayList<Registration_plate> registrationplateList) {
             this.context = context;
-            this.itemModelList = modelList;
+            this.itemRegistrationplateList = registrationplateList;
         }
         @Override
         public int getCount() {
-            return itemModelList.size();
+            return itemRegistrationplateList.size();
         }
         @Override
         public Object getItem(int position) {
-            return itemModelList.get(position);
+            return itemRegistrationplateList.get(position);
         }
         @Override
         public long getItemId(int position) {
@@ -42,13 +42,13 @@ public class CustomAdapter extends BaseAdapter {
                 convertView = mInflater.inflate(R.layout.items, null);
                 TextView tvName = (TextView) convertView.findViewById(R.id.tvName);
                 ImageView imgRemove = (ImageView) convertView.findViewById(R.id.imgRemove);
-                Model m = itemModelList.get(position);
+                Registration_plate m = itemRegistrationplateList.get(position);
                 tvName.setText(m.getName());
                 // click listiner for remove button
                 imgRemove.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        itemModelList.remove(position);
+                        itemRegistrationplateList.remove(position);
                         notifyDataSetChanged();
                     }
                 });

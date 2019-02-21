@@ -1,20 +1,20 @@
-package com.compscitutorials.basigarcia.navigationdrawervideotutorial.Recycler_List;
+package com.compscitutorials.basigarcia.navigationdrawervideotutorial.Recycler_List_Car;
 
 import java.util.ArrayList;
 
-public class AbstractModel {
+public class Car {
 
     private String title;
 
     private String message;
 
 
-    public AbstractModel(String title, String message) {
+    public Car(String title, String message) {
         this.title = title;
         this.message = message;
     }
 
-    public AbstractModel() {
+    public Car() {
 
     }
 

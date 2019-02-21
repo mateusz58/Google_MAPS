@@ -1,4 +1,4 @@
-package com.compscitutorials.basigarcia.navigationdrawervideotutorial.Recycler_List;
+package com.compscitutorials.basigarcia.navigationdrawervideotutorial.Recycler_List_Car;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;

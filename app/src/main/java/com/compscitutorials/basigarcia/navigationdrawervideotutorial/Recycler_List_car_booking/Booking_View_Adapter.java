@@ -1,7 +1,8 @@
-package com.compscitutorials.basigarcia.navigationdrawervideotutorial.Recycler_List;
+package com.compscitutorials.basigarcia.navigationdrawervideotutorial.Recycler_List_car_booking;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,10 +11,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import android.support.v7.widget.LinearLayoutManager;
-
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.R;
-import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.beans.Booking;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.beans.car_booking;
 
 
 /**
@@ -22,17 +21,18 @@ import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.beans
 public class Booking_View_Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context mContext;
-    private ArrayList<Booking> modelList;
+    private ArrayList<car_booking> modelList;
+    private final String TAG="Booking_View_Adapter";
 
     private OnItemClickListener mItemClickListener;
 
 
-    public Booking_View_Adapter(Context context, ArrayList<Booking> modelList) {
+    public Booking_View_Adapter(Context context, ArrayList<car_booking> modelList) {
         this.mContext = context;
         this.modelList = modelList;
     }
 
-    public void updateList(ArrayList<Booking> modelList) {
+    public void updateList(ArrayList<car_booking> modelList) {
         this.modelList = modelList;
         notifyDataSetChanged();
 
@@ -51,7 +51,7 @@ public class Booking_View_Adapter extends RecyclerView.Adapter<RecyclerView.View
 
         //Here you can fill your row view
         if (holder instanceof ViewHolder) {
-            final Booking model = getItem(position);
+            final car_booking model = getItem(position);
             ViewHolder genericViewHolder = (ViewHolder) holder;
 
             genericViewHolder.itemTxtTitle.setText(model.toString());
@@ -72,13 +72,13 @@ public class Booking_View_Adapter extends RecyclerView.Adapter<RecyclerView.View
         this.mItemClickListener = mItemClickListener;
     }
 
-    private Booking getItem(int position) {
+    private car_booking getItem(int position) {
         return modelList.get(position);
     }
 
 
     public interface OnItemClickListener {
-        void onItemClick(View view, int position, Booking model);
+        void onItemClick(View view, int position, car_booking model);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -86,6 +86,7 @@ public class Booking_View_Adapter extends RecyclerView.Adapter<RecyclerView.View
         private ImageView imgUser;
         private TextView itemTxtTitle;
         private TextView itemTxtMessage;
+
 
 
         // @BindView(R.id.img_user)
@@ -111,7 +112,18 @@ public class Booking_View_Adapter extends RecyclerView.Adapter<RecyclerView.View
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mItemClickListener.onItemClick(itemView, getAdapterPosition(), modelList.get(getAdapterPosition()));
+
+                    int a=2;
+
+                    ///executed before method on_click in booking_view_fragment
+
+                        mItemClickListener.onItemClick(itemView, getAdapterPosition(), modelList.get(getAdapterPosition()));
+
+                    ///executed after method on_click in booking_view_fragment
+
+                        Log.i(getClass().getSimpleName(), "ViewHolder");
+
+
 
 
                 }
