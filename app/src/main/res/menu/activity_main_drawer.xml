@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item android:id="@+id/nav_map" android:icon="@android:drawable/ic_dialog_map"
+            android:title="Map" />
+        <item android:id="@+id/nav_parkingplace" android:icon="@android:drawable/ic_menu_my_calendar"
+            android:title="Parking reservations" />
+        <item android:id="@+id/nav_logout" android:icon="@android:drawable/ic_lock_idle_lock"
+            android:title="Sign in" />
+        <item android:id="@+id/nav_tools" android:icon="@android:drawable/ic_menu_help"
+            android:title="About" />
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item android:id="@+id/nav_share" android:icon="@android:drawable/ic_menu_share"
+                android:title="Share" />
+            <item android:id="@+id/nav_send" android:icon="@android:drawable/ic_menu_send"
+                android:title="Send" />
+        </menu>
+    </item>
+
+</menu>

@@ -1,0 +1,10 @@
++Name get_Parking_Reservation
+
++Request
+GET https://polar-plains-14145.herokuapp.com/allocations
++Headers
++Body
+
++Response
++Body
+

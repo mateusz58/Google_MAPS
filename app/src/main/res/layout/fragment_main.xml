@@ -1,0 +1,32 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:tag="map_tag"
+    tools:context=".Mapfragment">
+
+
+
+    <Button
+        android:id="@+id/btnShowLocation"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="40dp"
+        android:onClick="Switch_SignupActivity"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:layout_gravity="bottom|right"
+        android:foreground="@android:drawable/ic_menu_mylocation"
+        android:background="@android:drawable/ic_menu_mylocation"
+        android:layout_alignParentBottom="true"
+
+        tools:ignore="OnClick" />
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        />
+
+
+</RelativeLayout>

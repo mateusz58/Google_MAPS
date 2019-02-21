@@ -1,0 +1,141 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#045b89"
+    tools:context="com.compscitutorials.basigarcia.navigationdrawervideotutorial.Parkingreservation">
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignWithParentIfMissing="false"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="30dp">
+
+        <Button
+            android:id="@+id/btn_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/Login_Register_Button"
+
+
+            android:text="Start" />
+
+        <EditText
+            android:id="@+id/in_start_date"
+            android:layout_width="145dp"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:editable="false"
+
+
+            android:maxLines="1" />
+
+        <EditText
+            android:id="@+id/in_start_time"
+            android:layout_width="145dp"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:editable="false"
+            android:maxLines="1"
+
+            />
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linearLayout"
+        android:layout_alignParentStart="true"
+        android:layout_gravity="center">
+
+        <Button
+            android:id="@+id/btn_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btn_end"
+            android:layout_alignParentStart="true"
+            android:background="@color/Login_Register_Button"
+            android:text="END" />
+
+        <EditText
+            android:id="@+id/in_end_date"
+            android:layout_width="145dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/btn_end"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="center_horizontal|top"
+            android:clickable="false"
+            android:editable="false" />
+
+
+        <EditText
+            android:id="@+id/in_end_time"
+            android:layout_width="145dp"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/in_end_date"
+            android:layout_toEndOf="@id/btn_end"
+            android:clickable="false"
+            android:editable="false"
+            android:maxLines="1" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_below="@+id/linearLayout2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp">
+
+        <EditText
+            android:id="@+id/in_reserve"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="false"
+
+            android:layout_centerInParent="true"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="80dp"
+            android:editable="false"
+            android:ems="10"
+            android:hint="     Registration number"
+            android:inputType="textPersonName" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linearLayout3"
+        android:layout_alignParentStart="true"
+        android:orientation="horizontal"
+        android:padding="0dp">
+
+        <Button
+            android:id="@+id/btn_reserve"
+            style="@style/Base.TextAppearance.AppCompat.Widget.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/editText"
+
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="140dp"
+            android:background="@color/Login_Register_Button"
+            android:enabled="true"
+            android:gravity="center"
+            android:text="Reserve" />
+    </LinearLayout>
+
+
+</RelativeLayout>
