@@ -14,28 +14,34 @@
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:id="@+id/layout_card_car_outside"
+        android:layout_height="239dp"
         android:background="#FFFFFF"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="12dp">
 
+
         <ImageView
-            android:id="@+id/img_user"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:background="#16000000" />
+            android:id="@+id/item_car_img_state_active"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="6dip"
+            android:contentDescription="TODO"
+            android:src="@drawable/ic_check_black_24dp" />
 
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:orientation="vertical"
@@ -44,7 +50,7 @@
 
 
                 <TextView
-                    android:id="@+id/item_txt_title"
+                    android:id="@+id/item_car_id"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text=""
@@ -52,7 +58,7 @@
                     android:textSize="14dp" />
 
                 <TextView
-                    android:id="@+id/item_txt_message"
+                    android:id="@+id/item_car_registration_plate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -60,11 +66,52 @@
                     android:textColor="#727272"
                     android:textSize="14dp" />
 
+
+                <TextView
+                    android:id="@+id/item_car_date_from"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text=""
+                    android:textColor="#727272"
+                    android:textSize="14dp" />
+
+
+                <TextView
+                    android:id="@+id/item_car_date_to"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text=""
+                    android:textColor="#727272"
+                    android:textSize="14dp" />
+
+
+                <TextView
+                    android:id="@+id/item_car_cost"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text=""
+                    android:textColor="#727272"
+                    android:textSize="14dp" />
+
+
+                <TextView
+                    android:id="@+id/item_car_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text=""
+                    android:textColor="#727272"
+                    android:textSize="14dp" />
+
+
             </LinearLayout>
 
 
             <android.support.v7.widget.SwitchCompat
-                android:id="@+id/switch_list"
+                android:id="@+id/item_car_switch_list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
