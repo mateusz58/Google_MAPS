@@ -21,6 +21,17 @@
         android:orientation="horizontal"
         android:padding="12dp">
 
+
+        <ImageView
+            android:id="@+id/item_booking_img_state"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="6dip"
+            android:src="@drawable/ic_check_black_24dp" />
+
+
         <ImageView
             android:id="@+id/img_user"
             android:layout_width="60dp"
@@ -37,15 +48,50 @@
 
 
             <TextView
-                android:id="@+id/item_txt_title"
+                android:id="@+id/item_booking_id"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text=""
                 android:textColor="#212121"
                 android:textSize="14dp" />
 
             <TextView
-                android:id="@+id/item_txt_message"
+                android:id="@+id/item_booking_date_from"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text=""
+                android:textColor="#727272"
+                android:textSize="14dp" />
+
+            <TextView
+                android:id="@+id/item_booking_date_to"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text=""
+                android:textColor="#727272"
+                android:textSize="14dp" />
+
+            <TextView
+                android:id="@+id/item_booking_cost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text=""
+                android:textColor="#727272"
+                android:textSize="14dp" />
+
+            <TextView
+                android:id="@+id/item_booking_Parking_street_city"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text=""
+                android:textColor="#727272"
+                android:textSize="14dp" />
+
+            <TextView
+                android:id="@+id/item_booking_active"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"

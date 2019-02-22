@@ -86,8 +86,6 @@ private static String TAG="Recycler_List_Car_Adapter";
                 genericViewHolder.item_car_id.setText("Identificator:"+model.getId());
                 genericViewHolder.item_car_date_from.setText("Start:\n"+model.getDateFrom());
                 genericViewHolder.item_car_date_to.setText("End:\n"+model.getDateTo());
-
-
                 genericViewHolder.item_car_registration_plate.setText("Car registration plate:\n "+model.getRegistrationPlate().toUpperCase());
                 genericViewHolder.item_car_status.setText("Status:"+model.getStatus());
 
@@ -104,7 +102,6 @@ private static String TAG="Recycler_List_Car_Adapter";
                 }
                 if(model.getStatus().contains("ACTIVE"))
                 {
-
                     genericViewHolder.item_car_switch_list.setEnabled(true);
                     genericViewHolder.itemView.setBackgroundColor(Color.argb(152,152,186,156));
                     genericViewHolder.item_car_switch_list.setChecked(true);

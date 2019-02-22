@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -23,6 +24,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.Time_operations.Time_converter;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -219,6 +221,8 @@ boolean validate_reservation_number(EditText reserve)
                     mMinute = c.get(Calendar.MINUTE);
 
 
+
+
                     // Launch Time Picker Dialog
                     TimePickerDialog timePickerDialog = new TimePickerDialog(this,
                             new TimePickerDialog.OnTimeSetListener() {
@@ -236,6 +240,11 @@ boolean validate_reservation_number(EditText reserve)
                     Log.i(TAG, "onClick:"+ mHour+" "+mMinute+" "+mYear+" "+mMonth+" "+mDay+"\n");
 
                     Log.i(TAG, "Checking calendar btn_start:"+ START.getDay()+" "+START.getMonth()+" "+START.getYear()+" "+START.getHours()+" "+START.getMinutes()+" "+START.getSeconds());
+
+                   if(DateUtils.isToday(Time_converter.convert_string_to_date_time(txtDate_start.toString()).getTime()))
+                   {
+//                       timePickerDialog..setMinDate(c.getTimeInMillis());
+                   }
 
                     start = Calendar.getInstance();
                     start.setTime(START);
