@@ -11,6 +11,11 @@ public class Car implements Serializable
     @SerializedName("id")
     @Expose
     private Integer id;
+
+    @SerializedName("Cost")
+    @Expose
+    private Double Cost;
+
     @SerializedName("Date_From")
     @Expose
     private String dateFrom;
@@ -18,6 +23,9 @@ public class Car implements Serializable
     @Expose
     private String dateTo;
     @SerializedName("registration_plate")
+
+
+
     @Expose
     private String registrationPlate;
     @SerializedName("booking")
@@ -44,7 +52,7 @@ public class Car implements Serializable
      * @param dateFrom
      * @param registrationPlate
      */
-    public Car(Integer id, String dateFrom, String dateTo, String registrationPlate, Integer booking, String status) {
+    public Car(Integer id, String dateFrom, String dateTo, String registrationPlate, Integer booking, String status,Double Cost) {
         super();
         this.id = id;
         this.dateFrom = dateFrom;
@@ -52,6 +60,7 @@ public class Car implements Serializable
         this.registrationPlate = registrationPlate;
         this.booking = booking;
         this.status = status;
+        this.Cost=Cost;
     }
 
     public Integer getId() {
@@ -84,8 +93,16 @@ public class Car implements Serializable
         return dateTo;
     }
 
+    public Double getCost() {
+        return Cost;
+    }
+
     public void setDateTo(String dateTo) {
         this.dateTo = dateTo;
+    }
+
+    public void setCost(Double Cost) {
+        this.Cost = Cost;
     }
 
     public Car withDateTo(String dateTo) {

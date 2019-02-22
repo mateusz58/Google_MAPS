@@ -425,7 +425,11 @@ public class Mapfragment extends Fragment implements GoogleApiClient.ConnectionC
 
         Log.i(TAG, "onConnected:Connection success");
 
-        display_My_Location();
+        try {
+//            display_My_Location();
+        } catch (Exception e) {
+            Log.e(getClass().getSimpleName(), "Exception handled", e);
+        }
 
     }
     @Override

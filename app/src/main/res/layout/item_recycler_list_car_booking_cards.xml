@@ -21,18 +21,6 @@
         android:orientation="horizontal"
         android:padding="12dp">
 
-
-        <ImageView
-            android:id="@+id/img_state"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginRight="6dip"
-            android:contentDescription="TODO"
-            android:src="@drawable/ic_check_black_24dp" />
-
-
         <ImageView
             android:id="@+id/img_user"
             android:layout_width="60dp"
@@ -49,73 +37,21 @@
 
 
             <TextView
-                android:id="@+id/item_booking_id"
+                android:id="@+id/item_txt_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text=""
                 android:textColor="#212121"
                 android:textSize="14dp" />
 
             <TextView
-                android:id="@+id/item_booking_date_from"
-                android:layout_width="fill_parent"
+                android:id="@+id/item_txt_message"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="false"
-                android:layout_above="@id/secondline"
-                android:layout_alignWithParentIfMissing="true"
-                android:layout_toRightOf="@id/img_state"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/item_booking_date_to"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_above="@id/thirdline"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="false"
-                android:layout_alignWithParentIfMissing="true"
-                android:layout_toRightOf="@id/img_state"
-                android:text="Example application"
-                android:textSize="16sp" />
-
-
-            <TextView
-                android:id="@+id/item_booking_Cost"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="false"
-                android:layout_alignWithParentIfMissing="true"
-                android:layout_toRightOf="@id/img_state"
-                android:layout_above="@id/forthline"
-                android:text="Example application"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/item_booking_parking_street_city"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="false"
-                android:layout_alignWithParentIfMissing="true"
-                android:layout_toRightOf="@id/img_state"
-                android:layout_above="@id/forthline"
-                android:text="Example application"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/item_booking_"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="false"
-                android:layout_alignWithParentIfMissing="true"
-                android:layout_toRightOf="@id/img_state"
-                android:layout_above="@id/forthline"
-                android:text="Example application"
-                android:textSize="16sp" />
-
-
+                android:layout_marginTop="8dp"
+                android:text=""
+                android:textColor="#727272"
+                android:textSize="14dp" />
 
         </LinearLayout>
 

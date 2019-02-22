@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 
 import android.support.v4.app.Fragment;
@@ -22,8 +23,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.text.Collator;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import android.support.v4.widget.SwipeRefreshLayout;
 
@@ -33,6 +43,7 @@ import com.compscitutorials.basigarcia.navigationdrawervideotutorial.R;
 //import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.beans.Booking;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.Recycler_List_Car.Recycler_List_car;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.SignupActivity;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.Time_operations.Time_converter;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.API_end_points;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.Parking_Service;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.beans.Car;
@@ -257,10 +268,15 @@ public class Booking_View_Fragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_recycler_view_fragment_car_booking_cards, container, false);
+        View view = null;
+        try {
+            view = inflater.inflate(R.layout.fragment_recycler_view_fragment_car_booking_cards, container, false);
 
-        // ButterKnife.bind(this);
-        findViews(view);
+            // ButterKnife.bind(this);
+            findViews(view);
+        } catch (Exception e) {
+            Log.e(getClass().getSimpleName(), "Exception handled", e);
+        }
 
         return view;
 
@@ -271,7 +287,11 @@ public class Booking_View_Fragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        setAdapter();
+        try {
+            setAdapter();
+        } catch (Exception e) {
+            Log.e(getClass().getSimpleName(), "Exception handled", e);
+        }
 //        getCurrentFragment();
 
 
@@ -279,6 +299,18 @@ public class Booking_View_Fragment extends Fragment {
         swipeRefreshRecyclerList.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+
+                new Getcar_booking().execute();
+                // Do your stuff on refresh
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if (swipeRefreshRecyclerList.isRefreshing())
+                            swipeRefreshRecyclerList.setRefreshing(false);
+                    }
+                }, 5000);
+
 
 
 
@@ -306,6 +338,8 @@ public class Booking_View_Fragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
+
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
@@ -334,6 +368,18 @@ public class Booking_View_Fragment extends Fragment {
                 FileInputStream fis = new FileInputStream(filePath);
                 ObjectInputStream ois = new ObjectInputStream(fis);
                 modelList = (ArrayList<car_booking>) ois.readObject();
+                Collections.sort(modelList, new Comparator<car_booking>() {
+                    @Override
+                    public int compare(car_booking o1, car_booking o2) {
+                        try {
+                            return Time_converter.convert_string_to_date_time(o1.getDateFrom()).compareTo(Time_converter.convert_string_to_date_time(o2.getDateFrom()));
+
+                        } catch (ParseException e1) {
+                            Log.e(getClass().getSimpleName(), "Exception handled", e1);
+                            return 0;
+                        }
+                    }
+                });
                 ois.close();
 
                 mAdapter = new Booking_View_Adapter(getActivity(), modelList);
@@ -382,18 +428,36 @@ public class Booking_View_Fragment extends Fragment {
                 //handle item click events here
                 Toast.makeText(getActivity(), "Hey " + model.getParking(), Toast.LENGTH_SHORT).show();
 
+                    List<Car> set = modelList.get(position).getBooking();
+                    Collections.sort(set, new Comparator<Car>() {
+                        @Override
+                        public int compare(Car o1, Car o2) {
+                            try {
+                                return Time_converter.convert_string_to_date_time(o1.getDateFrom()).compareTo(Time_converter.convert_string_to_date_time(o2.getDateFrom()));
+
+                            } catch (ParseException e1) {
+                                Log.e(getClass().getSimpleName(), "Exception handled", e1);
+                                return 0;
+                            }
+                        }
+                    });
+
+//                    HashSet<Car>hashSet=new HashSet<Car>(modelList.get(position).getBooking());
+//                    hashSet.addAll((modelList.get(position).getBooking()));
                 try {
-                    List<Car>car_temp=modelList.get(position).getBooking();
                     String filePath = getContext().getFilesDir().getPath().toString() + "/car.tmp";
                     File car_file = new File(filePath);
                     car_file.createNewFile(); // if file already exists will do nothing
                     FileOutputStream fos = new FileOutputStream(filePath);
                     ObjectOutputStream oos = new ObjectOutputStream(fos);
-                    oos.writeObject(car_temp);
+                    oos.writeObject(set);
                     oos.close();
+                } catch (IOException e1) {
+                    Log.e(getClass().getSimpleName(), "Exception handled", e1);
+                }
 
 
-                    try {
+                try {
 
                         Intent intent = new Intent(getActivity(), Recycler_List_car.class);
                         startActivity(intent);
@@ -402,12 +466,9 @@ public class Booking_View_Fragment extends Fragment {
                         Log.e(getClass().getSimpleName(), "Exception handled", e);
                     }
 
-                } catch (IOException e) {
-                    Log.e(getClass().getSimpleName(), "Exception handled", e);
-                }
+
             }
         });
-
 
     }
 

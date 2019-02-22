@@ -50,19 +50,23 @@ public class Booking_View_Adapter extends RecyclerView.Adapter<RecyclerView.View
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
 
         //Here you can fill your row view
-        if (holder instanceof ViewHolder) {
-            final car_booking model = getItem(position);
-            ViewHolder genericViewHolder = (ViewHolder) holder;
+        try {
+            if (holder instanceof ViewHolder) {
+                final car_booking model = getItem(position);
+                ViewHolder genericViewHolder = (ViewHolder) holder;
 
-//            private ImageView imgUser;
-//            private TextView itemTxtTitle;
-//            private TextView itemTxtMessage;
+    //            private ImageView imgUser;
+    //            private TextView itemTxtTitle;
+    //            private TextView itemTxtMessage;
 
-            genericViewHolder.itemTxtTitle.setText(model.getId().toString());
-            genericViewHolder.itemTxtMessage.setText(model.getParkingName());
-            genericViewHolder.imgUser.setImageResource(R.drawable.icon_parking);
+    //            genericViewHolder.itemTxtTitle.setText(model.getId().toString());
+    //            genericViewHolder.itemTxtMessage.setText(model.getParkingName());
+    //            genericViewHolder.imgUser.setImageResource(R.drawable.icon_parking);
 
 
+            }
+        } catch (Exception e) {
+            Log.e(getClass().getSimpleName(), "Exception handled", e);
         }
     }
 
@@ -109,7 +113,7 @@ public class Booking_View_Adapter extends RecyclerView.Adapter<RecyclerView.View
             // ButterKnife.bind(this, itemView);
 
             this.imgUser = (ImageView) itemView.findViewById(R.id.img_user);
-            this.itemTxtTitle = (TextView) itemView.findViewById(R.id.item_txt_title);
+            this.itemTxtTitle = (TextView) itemView.findViewById(R.id.item_booking_id);
             this.itemTxtMessage = (TextView) itemView.findViewById(R.id.item_txt_message);
 
 

@@ -38,12 +38,12 @@ public class Custom_Array_Adapter_for_Parking_History extends ArrayAdapter<Parki
         TextView Thirdline = (TextView) rowView.findViewById(R.id.thirdline);
         TextView forthline = (TextView) rowView.findViewById(R.id.forthline);
         TextView adressline = (TextView) rowView.findViewById(R.id.Address_line);
-        ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
+        ImageView imageView = (ImageView) rowView.findViewById(R.id.img_state);
         Firstline.setText(values.get(position).getOd().toString());
         adressline.setText(values.get(position).getAdres());
         Secondline.setText(values.get(position).getTheDo().toString());
         Thirdline.setText(values.get(position).getKod_dostepu());
-        forthline.setText(values.get(position).getNumer_rejestracji());
+        forthline.setText(values.get(position).getNumer_rejestracji().toUpperCase());
         imageView.setImageResource(R.drawable.ic_check_black_24dp);
         rowView.setBackgroundColor(Color.argb(100,204,255,204));
         Calendar cal = Calendar.getInstance();

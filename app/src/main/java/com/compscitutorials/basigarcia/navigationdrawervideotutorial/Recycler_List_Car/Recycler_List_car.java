@@ -8,13 +8,18 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
 import android.support.v4.widget.SwipeRefreshLayout;
 
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.R;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.beans.Car;
 
 import android.widget.Toast;
 import android.os.Handler;
@@ -28,6 +33,8 @@ import android.widget.EditText;
 import android.graphics.Color;
 import android.text.InputFilter;
 import android.text.Spanned;
+
+import static java.security.AccessController.getContext;
 
 
 public class Recycler_List_car extends AppCompatActivity {
@@ -91,6 +98,7 @@ public class Recycler_List_car extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle(title);
+        getSupportActionBar().hide();
     }
 
     @Override
@@ -147,7 +155,7 @@ public class Recycler_List_car extends AppCompatActivity {
                 ArrayList<Car> filterList = new ArrayList<Car>();
                 if (s.length() > 0) {
                     for (int i = 0; i < modelList.size(); i++) {
-                        if (modelList.get(i).getTitle().toLowerCase().contains(s.toString().toLowerCase())) {
+                        if (modelList.get(i).getRegistrationPlate().toLowerCase().contains(s.toString().toLowerCase())) {
                             filterList.add(modelList.get(i));
                             mAdapter.updateList(filterList);
                         }
@@ -164,25 +172,37 @@ public class Recycler_List_car extends AppCompatActivity {
         return true;
     }
 
-
     private void setAdapter() {
 
+//
+//        modelList.add(new Car("Android", "Hello " + " Android"));
+//        modelList.add(new Car("Beta", "Hello " + " Beta"));
+//        modelList.add(new Car("Cupcake", "Hello " + " Cupcake"));
+//        modelList.add(new Car("Donut", "Hello " + " Donut"));
+//        modelList.add(new Car("Eclair", "Hello " + " Eclair"));
+//        modelList.add(new Car("Froyo", "Hello " + " Froyo"));
+//        modelList.add(new Car("Gingerbread", "Hello " + " Gingerbread"));
+//        modelList.add(new Car("Honeycomb", "Hello " + " Honeycomb"));
+//        modelList.add(new Car("Ice Cream Sandwich", "Hello " + " Ice Cream Sandwich"));
+//        modelList.add(new Car("Jelly Bean", "Hello " + " Jelly Bean"));
+//        modelList.add(new Car("KitKat", "Hello " + " KitKat"));
+//        modelList.add(new Car("Lollipop", "Hello " + " Lollipop"));
+//        modelList.add(new Car("Marshmallow", "Hello " + " Marshmallow"));
+//        modelList.add(new Car("Nougat", "Hello " + " Nougat"));
+//        modelList.add(new Car("Android O", "Hello " + " Android O"));
 
-        modelList.add(new Car("Android", "Hello " + " Android"));
-        modelList.add(new Car("Beta", "Hello " + " Beta"));
-        modelList.add(new Car("Cupcake", "Hello " + " Cupcake"));
-        modelList.add(new Car("Donut", "Hello " + " Donut"));
-        modelList.add(new Car("Eclair", "Hello " + " Eclair"));
-        modelList.add(new Car("Froyo", "Hello " + " Froyo"));
-        modelList.add(new Car("Gingerbread", "Hello " + " Gingerbread"));
-        modelList.add(new Car("Honeycomb", "Hello " + " Honeycomb"));
-        modelList.add(new Car("Ice Cream Sandwich", "Hello " + " Ice Cream Sandwich"));
-        modelList.add(new Car("Jelly Bean", "Hello " + " Jelly Bean"));
-        modelList.add(new Car("KitKat", "Hello " + " KitKat"));
-        modelList.add(new Car("Lollipop", "Hello " + " Lollipop"));
-        modelList.add(new Car("Marshmallow", "Hello " + " Marshmallow"));
-        modelList.add(new Car("Nougat", "Hello " + " Nougat"));
-        modelList.add(new Car("Android O", "Hello " + " Android O"));
+
+        try {
+            String filePath = getApplicationContext().getFilesDir().getPath().toString() + "/car.tmp";
+            FileInputStream fis = new FileInputStream(filePath);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            modelList = (ArrayList<Car>) ois.readObject();
+            ois.close();
+        } catch (IOException e) {
+            Log.e(getClass().getSimpleName(), "Exception handled", e);
+        } catch (ClassNotFoundException e) {
+            Log.e(getClass().getSimpleName(), "Exception handled", e);
+        }
 
 
         mAdapter = new Recycler_List_Car_Adapter(Recycler_List_car.this, modelList);
@@ -203,7 +223,7 @@ public class Recycler_List_car extends AppCompatActivity {
 
             public void onEndOfScrollReached(RecyclerView rv) {
 
-                Toast.makeText(Recycler_List_car.this, "End of the RecyclerView reached. Do your pagination stuff here", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(Recycler_List_car.this, "End of the RecyclerView reached. Do your pagination stuff here", Toast.LENGTH_SHORT).show();
 
                 scrollListener.disableScrollListener();
             }
@@ -221,7 +241,7 @@ public class Recycler_List_car extends AppCompatActivity {
             public void onItemClick(View view, int position, Car model) {
 
                 //handle item click events here
-                Toast.makeText(Recycler_List_car.this, "Hey " + model.getTitle(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(Recycler_List_car.this, "Hey " + model.getTitle(), Toast.LENGTH_SHORT).show();
 
 
             }

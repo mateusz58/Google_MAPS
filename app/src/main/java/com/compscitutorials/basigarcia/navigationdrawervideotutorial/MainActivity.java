@@ -401,10 +401,11 @@ public class MainActivity extends AppCompatActivity
             Log.w(TAG, "onNavigationItemSelected: Restartactivity");
 
 
-                getSupportActionBar().hide();
+
 
 
             try {
+                getSupportActionBar().hide();
                 Booking_View_Fragment fragment=new Booking_View_Fragment();
                 android.support.v4.app.FragmentTransaction fragmentTransaction =
                         getSupportFragmentManager().beginTransaction();
