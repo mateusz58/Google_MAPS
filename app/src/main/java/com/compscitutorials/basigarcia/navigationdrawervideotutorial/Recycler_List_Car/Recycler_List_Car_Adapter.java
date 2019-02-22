@@ -15,19 +15,31 @@ import android.support.v7.widget.LinearLayoutManager;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.R;
 
 
+import android.support.v7.widget.SwitchCompat;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import android.widget.CompoundButton;
+
 
 /**
  * A custom adapter to use with the RecyclerView widget.
  */
-public class Car_View_Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class Recycler_List_Car_Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context mContext;
     private ArrayList<Car> modelList;
 
     private OnItemClickListener mItemClickListener;
 
+    private OnCheckedListener mOnCheckedListener;
 
-    public Car_View_Adapter(Context context, ArrayList<Car> modelList) {
+
+    private Set<Integer> checkSet = new HashSet<>();
+
+
+    public Recycler_List_Car_Adapter(Context context, ArrayList<Car> modelList) {
         this.mContext = context;
         this.modelList = modelList;
     }
@@ -41,7 +53,7 @@ public class Car_View_Adapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
 
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_recycler_list, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_recycler_list_car, viewGroup, false);
 
         return new ViewHolder(view);
     }
@@ -58,6 +70,27 @@ public class Car_View_Adapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             genericViewHolder.itemTxtMessage.setText(model.getMessage());
 
 
+            genericViewHolder.itemSwitchList.setOnCheckedChangeListener(null);
+
+            //if true, your checkbox will be selected, else unselected
+            genericViewHolder.itemSwitchList.setChecked(checkSet.contains(position));
+
+            genericViewHolder.itemSwitchList.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                    if (isChecked) {
+                        checkSet.add(position);
+                    } else {
+                        checkSet.remove(position);
+                    }
+
+                    mOnCheckedListener.onChecked(buttonView, isChecked, position, model);
+
+                }
+            });
+
+
         }
     }
 
@@ -72,13 +105,22 @@ public class Car_View_Adapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         this.mItemClickListener = mItemClickListener;
     }
 
+    public void SetOnCheckedListener(final OnCheckedListener onCheckedListener) {
+        this.mOnCheckedListener = onCheckedListener;
+
+    }
+
     private Car getItem(int position) {
         return modelList.get(position);
     }
 
-
     public interface OnItemClickListener {
         void onItemClick(View view, int position, Car model);
+    }
+
+
+    public interface OnCheckedListener {
+        void onChecked(View view, boolean isChecked, int position, Car model);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -87,6 +129,8 @@ public class Car_View_Adapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         private TextView itemTxtTitle;
         private TextView itemTxtMessage;
 
+
+        private SwitchCompat itemSwitchList;
 
         // @BindView(R.id.img_user)
         // ImageView imgUser;
@@ -106,6 +150,8 @@ public class Car_View_Adapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             this.imgUser = (ImageView) itemView.findViewById(R.id.img_user);
             this.itemTxtTitle = (TextView) itemView.findViewById(R.id.item_txt_title);
             this.itemTxtMessage = (TextView) itemView.findViewById(R.id.item_txt_message);
+
+            this.itemSwitchList = (SwitchCompat) itemView.findViewById(R.id.switch_list);
 
 
             itemView.setOnClickListener(new View.OnClickListener() {

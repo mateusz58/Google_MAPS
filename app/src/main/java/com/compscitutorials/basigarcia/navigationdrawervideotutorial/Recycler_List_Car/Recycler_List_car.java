@@ -1,14 +1,10 @@
 package com.compscitutorials.basigarcia.navigationdrawervideotutorial.Recycler_List_Car;
 
-import android.content.Context;
-import android.net.Uri;
-
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import android.support.v7.widget.LinearLayoutManager;
 
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
@@ -22,6 +18,7 @@ import com.compscitutorials.basigarcia.navigationdrawervideotutorial.R;
 
 import android.widget.Toast;
 import android.os.Handler;
+import android.support.v7.widget.Toolbar;
 
 import android.view.Menu;
 import android.support.v7.widget.SearchView;
@@ -33,105 +30,35 @@ import android.text.InputFilter;
 import android.text.Spanned;
 
 
-import android.view.ViewGroup;
-import android.view.MenuInflater;
-
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link Car_View_Fragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link Car_View_Fragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-
-
-public class Car_View_Fragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    private OnFragmentInteractionListener mListener;
+public class Recycler_List_car extends AppCompatActivity {
 
     private RecyclerView recyclerView;
 
     // @BindView(R.id.recycler_view)
     // RecyclerView recyclerView;
 
+    //@BindView(R.id.toolbar)
+    //Toolbar toolbar;
+    private Toolbar toolbar;
 
     // @BindView(R.id.swipe_refresh_recycler_list)
     // SwipeRefreshLayout swipeRefreshRecyclerList;
 
     private SwipeRefreshLayout swipeRefreshRecyclerList;
-    private Car_View_Adapter mAdapter;
+    private Recycler_List_Car_Adapter mAdapter;
     private RecyclerViewScrollListener scrollListener;
 
     private ArrayList<Car> modelList = new ArrayList<>();
 
 
-    public Car_View_Fragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Car_View_Fragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static Car_View_Fragment newInstance(String param1, String param2) {
-        Car_View_Fragment fragment = new Car_View_Fragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    public static Car_View_Fragment newInstance() {
-        Car_View_Fragment fragment = new Car_View_Fragment();
-        return fragment;
-    }
-
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        View view = inflater.inflate(R.layout.fragment_car__view, container, false);
+        setContentView(R.layout.layout_activity_recycler__list_car);
 
         // ButterKnife.bind(this);
-        findViews(view);
-
-        return view;
-
-    }
-
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
+        findViews();
+        initToolbar("Takeoff Android");
         setAdapter();
 
         swipeRefreshRecyclerList.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -151,52 +78,35 @@ public class Car_View_Fragment extends Fragment {
             }
         });
 
-
     }
 
-
-    private void findViews(View view) {
-
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-        swipeRefreshRecyclerList = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_recycler_list);
+    private void findViews() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        swipeRefreshRecyclerList = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_recycler_list);
     }
 
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+    public void initToolbar(String title) {
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setTitle(title);
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
+        getMenuInflater().inflate(R.menu.menu_search, menu);
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_search, menu);
 
         // Retrieve the SearchView and plug it into SearchManager
         final SearchView searchView = (SearchView) MenuItemCompat
                 .getActionView(menu.findItem(R.id.action_search));
 
-        SearchManager searchManager = (SearchManager) getActivity().getSystemService(getActivity().SEARCH_SERVICE);
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+        SearchManager searchManager = (SearchManager) this.getSystemService(this.SEARCH_SERVICE);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(this.getComponentName()));
+
         //changing edittext color
         EditText searchEdit = ((EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text));
         searchEdit.setTextColor(Color.WHITE);
@@ -250,7 +160,10 @@ public class Car_View_Fragment extends Fragment {
             }
         });
 
+
+        return true;
     }
+
 
     private void setAdapter() {
 
@@ -272,12 +185,14 @@ public class Car_View_Fragment extends Fragment {
         modelList.add(new Car("Android O", "Hello " + " Android O"));
 
 
-        mAdapter = new Car_View_Adapter(getActivity(), modelList);
+        mAdapter = new Recycler_List_Car_Adapter(Recycler_List_car.this, modelList);
 
         recyclerView.setHasFixedSize(true);
 
         // use a linear layout manager
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+
         recyclerView.setLayoutManager(layoutManager);
 
 
@@ -288,7 +203,7 @@ public class Car_View_Fragment extends Fragment {
 
             public void onEndOfScrollReached(RecyclerView rv) {
 
-                Toast.makeText(getActivity(), "End of the RecyclerView reached. Do your pagination stuff here", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Recycler_List_car.this, "End of the RecyclerView reached. Do your pagination stuff here", Toast.LENGTH_SHORT).show();
 
                 scrollListener.disableScrollListener();
             }
@@ -301,34 +216,27 @@ public class Car_View_Fragment extends Fragment {
           */
 
 
-        mAdapter.SetOnItemClickListener(new Car_View_Adapter.OnItemClickListener() {
+        mAdapter.SetOnItemClickListener(new Recycler_List_Car_Adapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position, Car model) {
 
                 //handle item click events here
-                Toast.makeText(getActivity(), "Hey " + model.getTitle(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(Recycler_List_car.this, "Hey " + model.getTitle(), Toast.LENGTH_SHORT).show();
 
 
             }
         });
 
+        mAdapter.SetOnCheckedListener(new Recycler_List_Car_Adapter.OnCheckedListener() {
+            @Override
+            public void onChecked(View view, boolean isChecked, int position, Car model) {
+
+            }
+
+        });
+
 
     }
 
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
 
 }

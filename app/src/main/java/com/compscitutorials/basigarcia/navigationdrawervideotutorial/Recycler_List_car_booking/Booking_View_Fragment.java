@@ -1,6 +1,7 @@
 package com.compscitutorials.basigarcia.navigationdrawervideotutorial.Recycler_List_car_booking;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 
@@ -12,8 +13,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
@@ -29,15 +28,18 @@ import java.util.List;
 import android.support.v4.widget.SwipeRefreshLayout;
 
 
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.MainActivity;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.R;
 //import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.beans.Booking;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.Recycler_List_Car.Recycler_List_car;
+import com.compscitutorials.basigarcia.navigationdrawervideotutorial.SignupActivity;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.API_end_points;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.Parking_Service;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.beans.Car;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.beans.car_booking;
 
+import android.widget.ListView;
 import android.widget.Toast;
-import android.os.Handler;
 
 import android.view.Menu;
 import android.support.v7.widget.SearchView;
@@ -58,9 +60,6 @@ import retrofit2.Response;
 
 import static android.content.Context.MODE_PRIVATE;
 
-
-
-
 public class Booking_View_Fragment extends Fragment {
 
 
@@ -68,6 +67,71 @@ public class Booking_View_Fragment extends Fragment {
 
     public Booking_View_Fragment() {
         // Required empty public constructor
+    }
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.recycler_view_divider, menu);
+
+        // Retrieve the SearchView and plug it into SearchManager
+        final SearchView searchView = (SearchView) MenuItemCompat
+                .getActionView(menu.findItem(R.id.action_search));
+
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(getActivity().SEARCH_SERVICE);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+        //changing edittext color
+        EditText searchEdit = ((EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text));
+        searchEdit.setTextColor(Color.WHITE);
+        searchEdit.setHintTextColor(Color.WHITE);
+        searchEdit.setBackgroundColor(Color.TRANSPARENT);
+        searchEdit.setHint("Search");
+
+        InputFilter[] fArray = new InputFilter[2];
+        fArray[0] = new InputFilter.LengthFilter(40);
+        fArray[1] = new InputFilter() {
+            @Override
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+
+                for (int i = start; i < end; i++) {
+
+                    if (!Character.isLetterOrDigit(source.charAt(i)))
+                        return "";
+                }
+
+
+                return null;
+
+
+            }
+        };
+        searchEdit.setFilters(fArray);
+        View v = searchView.findViewById(android.support.v7.appcompat.R.id.search_plate);
+        v.setBackgroundColor(Color.TRANSPARENT);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                ArrayList<car_booking> filterList = new ArrayList<car_booking>();
+                if (s.length() > 0) {
+                    for (int i = 0; i < modelList.size(); i++) {
+                        if (modelList.get(i).toString().toLowerCase().contains(s.toString().toLowerCase())) {
+                            filterList.add(modelList.get(i));
+                            mAdapter.updateList(filterList);
+                        }
+                    }
+
+                } else {
+                    mAdapter.updateList(modelList);
+                }
+                return false;
+            }
+        });
+
     }
 
     public class Getcar_booking extends AsyncTask<Void, Void, String>{
@@ -190,10 +254,10 @@ public class Booking_View_Fragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater,ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_booking_view, container, false);
+        View view = inflater.inflate(R.layout.fragment_recycler_view_fragment_car_booking_cards, container, false);
 
         // ButterKnife.bind(this);
         findViews(view);
@@ -201,26 +265,22 @@ public class Booking_View_Fragment extends Fragment {
         return view;
 
     }
+
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         setAdapter();
+//        getCurrentFragment();
+
+
 
         swipeRefreshRecyclerList.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
 
-                new Getcar_booking().execute();
-                // Do your stuff on refresh
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
 
-                        if (swipeRefreshRecyclerList.isRefreshing())
-                            swipeRefreshRecyclerList.setRefreshing(false);
-                    }
-                }, 5000);
 
             }
         });
@@ -260,114 +320,38 @@ public class Booking_View_Fragment extends Fragment {
         mListener = null;
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.recycler_view_divider, menu);
-
-        // Retrieve the SearchView and plug it into SearchManager
-        final SearchView searchView = (SearchView) MenuItemCompat
-                .getActionView(menu.findItem(R.id.action_search));
-
-        SearchManager searchManager = (SearchManager) getActivity().getSystemService(getActivity().SEARCH_SERVICE);
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
-        //changing edittext color
-        EditText searchEdit = ((EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text));
-        searchEdit.setTextColor(Color.WHITE);
-        searchEdit.setHintTextColor(Color.WHITE);
-        searchEdit.setBackgroundColor(Color.TRANSPARENT);
-        searchEdit.setHint("Search");
-
-        InputFilter[] fArray = new InputFilter[2];
-        fArray[0] = new InputFilter.LengthFilter(40);
-        fArray[1] = new InputFilter() {
-            @Override
-            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-
-                for (int i = start; i < end; i++) {
-
-                    if (!Character.isLetterOrDigit(source.charAt(i)))
-                        return "";
-                }
-
-
-                return null;
-
-
-            }
-        };
-        searchEdit.setFilters(fArray);
-        View v = searchView.findViewById(android.support.v7.appcompat.R.id.search_plate);
-        v.setBackgroundColor(Color.TRANSPARENT);
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String s) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String s) {
-                ArrayList<car_booking> filterList = new ArrayList<car_booking>();
-                if (s.length() > 0) {
-                    for (int i = 0; i < modelList.size(); i++) {
-                        if (modelList.get(i).toString().toLowerCase().contains(s.toString().toLowerCase())) {
-                            filterList.add(modelList.get(i));
-                            mAdapter.updateList(filterList);
-                        }
-                    }
-
-                } else {
-                    mAdapter.updateList(modelList);
-                }
-                return false;
-            }
-        });
-
-    }
 
     private void setAdapter() {
-
-//        modelList.add(new AbstractModel("Android", "Hello " + " Android"));
-
-
-//        modelList.add(new AbstractModel("Android", "Hello " + " Android"));
-//        modelList.add(new AbstractModel("Beta", "Hello " + " Beta"));
-//        modelList.add(new AbstractModel("Cupcake", "Hello " + " Cupcake"));
-//        modelList.add(new AbstractModel("Donut", "Hello " + " Donut"));
-//        modelList.add(new AbstractModel("Eclair", "Hello " + " Eclair"));
-//        modelList.add(new AbstractModel("Froyo", "Hello " + " Froyo"));
-//        modelList.add(new AbstractModel("Gingerbread", "Hello " + " Gingerbread"));
-//        modelList.add(new AbstractModel("Honeycomb", "Hello " + " Honeycomb"));
-//        modelList.add(new AbstractModel("Ice Cream Sandwich", "Hello " + " Ice Cream Sandwich"));
-//        modelList.add(new AbstractModel("Jelly Bean", "Hello " + " Jelly Bean"));
-//        modelList.add(new AbstractModel("KitKat", "Hello " + " KitKat"));
-//        modelList.add(new AbstractModel("Lollipop", "Hello " + " Lollipop"));
-//        modelList.add(new AbstractModel("Marshmallow", "Hello " + " Marshmallow"));
-//        modelList.add(new AbstractModel("Nougat", "Hello " + " Nougat"));
-//        modelList.add(new AbstractModel("Android O", "Hello " + " Android O"));
 
 
         try {
 //            modelList=
 //
-            String filePath = getContext().getFilesDir().getPath().toString() + "/car_booking.tmp";
-                    FileInputStream fis = new FileInputStream(filePath);
-            ObjectInputStream ois = new ObjectInputStream(fis);
-            modelList = (ArrayList<car_booking>) ois.readObject();
-            ois.close();
 
-            mAdapter = new Booking_View_Adapter(getActivity(), modelList);
 
-            recyclerView.setHasFixedSize(true);
+            try {
+                String filePath = getContext().getFilesDir().getPath().toString() + "/car_booking.tmp";
+                FileInputStream fis = new FileInputStream(filePath);
+                ObjectInputStream ois = new ObjectInputStream(fis);
+                modelList = (ArrayList<car_booking>) ois.readObject();
+                ois.close();
 
-            // use a linear layout manager
-            LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-            recyclerView.setLayoutManager(layoutManager);
+                mAdapter = new Booking_View_Adapter(getActivity(), modelList);
 
-            DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());
-            dividerItemDecoration.setDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.booking_divider_recyclerview));
-            recyclerView.addItemDecoration(dividerItemDecoration);
+                recyclerView.setHasFixedSize(true);
+
+                // use a linear layout manager
+                LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+                recyclerView.setLayoutManager(layoutManager);
+            } catch (IOException e) {
+                Log.e(getClass().getSimpleName(), "Exception handled", e);
+            } catch (ClassNotFoundException e) {
+                Log.e(getClass().getSimpleName(), "Exception handled", e);
+            }
+
+//            DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());
+//            dividerItemDecoration.setDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.booking_divider_recyclerview));
+//            recyclerView.addItemDecoration(dividerItemDecoration);
 
             recyclerView.setAdapter(mAdapter);
         } catch (Exception e) {
@@ -407,6 +391,17 @@ public class Booking_View_Fragment extends Fragment {
                     ObjectOutputStream oos = new ObjectOutputStream(fos);
                     oos.writeObject(car_temp);
                     oos.close();
+
+
+                    try {
+
+                        Intent intent = new Intent(getActivity(), Recycler_List_car.class);
+                        startActivity(intent);
+
+                    } catch (Exception e) {
+                        Log.e(getClass().getSimpleName(), "Exception handled", e);
+                    }
+
                 } catch (IOException e) {
                     Log.e(getClass().getSimpleName(), "Exception handled", e);
                 }
@@ -430,7 +425,12 @@ public class Booking_View_Fragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+
+        public void onListItemClick(ListView l, View v, int position, long id);
+
+        }
+
     }
 
-}
+
 

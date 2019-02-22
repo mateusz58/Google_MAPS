@@ -41,7 +41,7 @@ public class Booking_View_Adapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
 
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_booking_list, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_recycler_list_car_booking_cards, viewGroup, false);
 
         return new ViewHolder(view);
     }
@@ -54,13 +54,17 @@ public class Booking_View_Adapter extends RecyclerView.Adapter<RecyclerView.View
             final car_booking model = getItem(position);
             ViewHolder genericViewHolder = (ViewHolder) holder;
 
+//            private ImageView imgUser;
+//            private TextView itemTxtTitle;
+//            private TextView itemTxtMessage;
+
             genericViewHolder.itemTxtTitle.setText(model.getId().toString());
             genericViewHolder.itemTxtMessage.setText(model.getParkingName());
+            genericViewHolder.imgUser.setImageResource(R.drawable.icon_parking);
 
 
         }
     }
-
 
     @Override
     public int getItemCount() {
@@ -119,9 +123,13 @@ public class Booking_View_Adapter extends RecyclerView.Adapter<RecyclerView.View
 
                         mItemClickListener.onItemClick(itemView, getAdapterPosition(), modelList.get(getAdapterPosition()));
 
+
+
                     ///executed after method on_click in booking_view_fragment
 
                         Log.i(getClass().getSimpleName(), "ViewHolder");
+
+
 
                 }
             });

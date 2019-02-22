@@ -16,14 +16,15 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 //import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.FactoryAPI;
 //import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.FactoryAPIFactory;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.Recycler_List_car_booking.Booking_View_Fragment;
-import com.compscitutorials.basigarcia.navigationdrawervideotutorial.Recycler_List_car_booking.Booking_View_Fragment.OnFragmentInteractionListener;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.TEMP.FactoryAPI;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.API_end_points;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.beans.Parking;
@@ -46,12 +47,12 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener,OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, Booking_View_Fragment.OnFragmentInteractionListener {
 
 
 
 
-   private static Booking_View_Fragment booking_view_fragment;
+   private Booking_View_Fragment booking_view_fragment;
 
     private static final String TAG="MainActivity";
     ////TRASES
@@ -71,18 +72,19 @@ public class MainActivity extends AppCompatActivity
 
     private ArrayList<car_booking>  car_booking_list;
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+
+    }
 
 
 //    public static List<car_booking> car_booking_list;
 
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
-        Log.w(TAG,"Interaction");
-
-    }
 
 
     public class Getcar_booking extends AsyncTask<Void, Void, String> implements Serializable {
@@ -175,6 +177,9 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+
+
+
     class GetParking extends AsyncTask<Void, Void, String> {
         @Override
         protected String doInBackground(Void... params) {
@@ -229,6 +234,7 @@ public class MainActivity extends AppCompatActivity
             }
         }
 
+
         @Override
         protected void onPostExecute(String out) {
 
@@ -251,6 +257,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+//        getSupportFragmentManager().beginTransaction().replace()
 
         SharedPreferences prefs = getSharedPreferences("Token.txt",MODE_PRIVATE);
         Token = prefs.getString("Token",null);
@@ -372,6 +380,10 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+
+
+
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -389,13 +401,18 @@ public class MainActivity extends AppCompatActivity
             Log.w(TAG, "onNavigationItemSelected: Restartactivity");
 
 
-                getSupportActionBar().show();
+                getSupportActionBar().hide();
 
+
+            try {
                 Booking_View_Fragment fragment=new Booking_View_Fragment();
                 android.support.v4.app.FragmentTransaction fragmentTransaction =
                         getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.fragment_container, fragment);
                 fragmentTransaction.commit();
+            } catch (Exception e) {
+                Log.e(getClass().getSimpleName(), "Exception handled", e);
+            }
 
 //            Parkinghistory fragment = new Parkinghistory();
 //            //fragment.newInstance("BLA","BLA1");
@@ -411,7 +428,6 @@ public class MainActivity extends AppCompatActivity
 
             SharedPreferences prefs = getSharedPreferences("Token.txt",MODE_PRIVATE);
             String token = prefs.getString("Token",null);
-
 
             if(API.is_Token=false) {
 
@@ -455,13 +471,7 @@ public class MainActivity extends AppCompatActivity
             this.startActivity(myIntent);//to jest wazne
         } else if (id == R.id.nav_tools) {
 
-
-
-
         } else if (id == R.id.nav_share) {
-
-
-
 
 
         } else if (id == R.id.nav_send) {
