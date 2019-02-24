@@ -38,7 +38,7 @@ android {
         exclude 'META-INF/dependencies.txt'
         exclude 'META-INF/LGPL2.1'
     }
-    compileSdkVersion 26
+    compileSdkVersion 25
 
     testOptions {
         unitTests.returnDefaultValues = true
@@ -48,7 +48,7 @@ android {
     defaultConfig {
         applicationId "com.compscitutorials.basigarcia.navigationdrawervideotutorial"
         minSdkVersion 23
-        targetSdkVersion 26
+        targetSdkVersion 25
         versionCode 1
         versionName "1.0"
         multiDexEnabled = true
@@ -90,7 +90,8 @@ dependencies {
 
     //GSM locations
 
-    compile 'com.google.android.gms:play-services-location:8.4.0'
+    implementation 'com.google.android.gms:play-services-maps:11.8.0'
+    compile 'com.google.android.gms:play-services-location:11.8.0'
 
     //Volley API
 
@@ -154,6 +155,19 @@ dependencies {
 
     compile 'com.android.support:recyclerview-v7:25.3.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+
+    //retrofit logging interceptor
+
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.8.0'
+
+
+    //GPS
+
+
+
+
+
+
 
 
 }

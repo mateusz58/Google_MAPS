@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 
 import android.support.v4.app.Fragment;
@@ -23,9 +24,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Array;
 import java.text.Collator;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -79,6 +83,19 @@ public class Booking_View_Fragment extends Fragment {
     public Booking_View_Fragment() {
         // Required empty public constructor
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
+    }
+    @Override
+    public void onStop() {
+        super.onStop();
+        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
+    }
+
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -96,6 +113,7 @@ public class Booking_View_Fragment extends Fragment {
         searchEdit.setHintTextColor(Color.WHITE);
         searchEdit.setBackgroundColor(Color.TRANSPARENT);
         searchEdit.setHint("Search");
+
 
         InputFilter[] fArray = new InputFilter[2];
         fArray[0] = new InputFilter.LengthFilter(40);
@@ -116,7 +134,7 @@ public class Booking_View_Fragment extends Fragment {
             }
         };
         searchEdit.setFilters(fArray);
-        View v = searchView.findViewById(android.support.v7.appcompat.R.id.search_plate);
+        View v = searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
         v.setBackgroundColor(Color.TRANSPARENT);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -142,7 +160,6 @@ public class Booking_View_Fragment extends Fragment {
                 return false;
             }
         });
-
     }
 
     public class Getcar_booking extends AsyncTask<Void, Void, String>{
@@ -362,7 +379,6 @@ public class Booking_View_Fragment extends Fragment {
 //            modelList=
 //
 
-
             try {
                 String filePath = getContext().getFilesDir().getPath().toString() + "/car_booking.tmp";
                 FileInputStream fis = new FileInputStream(filePath);
@@ -372,7 +388,11 @@ public class Booking_View_Fragment extends Fragment {
                     @Override
                     public int compare(car_booking o1, car_booking o2) {
                         try {
-                            return Time_converter.convert_string_to_date_time(o1.getDateFrom()).compareTo(Time_converter.convert_string_to_date_time(o2.getDateFrom()));
+                           Date start1=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(o1.getDateFrom().substring(0, 19).replace("T", " "));
+                            Date start2=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(o2.getDateFrom().substring(0, 19).replace("T", " "));
+
+
+                            return start1.compareTo(start2);
 
                         } catch (ParseException e1) {
                             Log.e(getClass().getSimpleName(), "Exception handled", e1);
@@ -381,7 +401,7 @@ public class Booking_View_Fragment extends Fragment {
                     }
                 });
                 ois.close();
-
+                Collections.reverse(modelList);
                 mAdapter = new Booking_View_Adapter(getActivity(), modelList);
 
                 recyclerView.setHasFixedSize(true);
@@ -433,7 +453,9 @@ public class Booking_View_Fragment extends Fragment {
                         @Override
                         public int compare(Car o1, Car o2) {
                             try {
-                                return Time_converter.convert_string_to_date_time(o1.getDateFrom()).compareTo(Time_converter.convert_string_to_date_time(o2.getDateFrom()));
+                                Date start1=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(o1.getDateFrom().substring(0, 19).replace("T", " "));
+                                Date start2=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(o2.getDateFrom().substring(0, 19).replace("T", " "));
+                                return start1.compareTo(start2);
 
                             } catch (ParseException e1) {
                                 Log.e(getClass().getSimpleName(), "Exception handled", e1);
@@ -441,10 +463,17 @@ public class Booking_View_Fragment extends Fragment {
                             }
                         }
                     });
+                    for (int i=0;i< modelList.size();i++)
+                    {
+
+                    }
 
 //                    HashSet<Car>hashSet=new HashSet<Car>(modelList.get(position).getBooking());
 //                    hashSet.addAll((modelList.get(position).getBooking()));
                 try {
+//                    List<Car>copy=set.subList(0,set.size());
+                    Collections.reverse(set);
+
                     String filePath = getContext().getFilesDir().getPath().toString() + "/car.tmp";
                     File car_file = new File(filePath);
                     car_file.createNewFile(); // if file already exists will do nothing

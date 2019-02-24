@@ -22,33 +22,24 @@ import android.widget.ListView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.API_Errors.ErrorUtils;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.API_Errors.Error_Response_Booking;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.Testmodel.Registration_plate;
-import com.compscitutorials.basigarcia.navigationdrawervideotutorial.Time_operations.Time_converter;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.API_end_points;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.controller.api.Parking_Service;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.beans.Booking;
-import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.reponse.Response_Login;
 
-import java.io.IOException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Locale;
 
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 import static android.text.Selection.setSelection;
-import static com.compscitutorials.basigarcia.navigationdrawervideotutorial.Time_operations.Time_converter.convert_string_to_date_time;
 import static junit.framework.Assert.assertTrue;
 
 
@@ -81,11 +72,22 @@ public class Parkingreservation_v2 extends AppCompatActivity implements View.OnC
     Button btnreserve;
     Button btnTimePicker;
     Button btnDatePicker;
-    EditText txtDate_start;
-    EditText txtTime_start;
+
+    EditText txtDate_start_formatted;
+    EditText txtDate_end_formatted;
+
+    EditText txtTime_start_formatted;
+    EditText txtTime_end_formatted;
+
+
+    String Date_start;
+    String Date_end;
+
+
+
     EditText reserve;
-    EditText txtDate_end;
-    EditText txtTime_end;
+
+
 
     Calendar start;
 
@@ -96,24 +98,34 @@ public class Parkingreservation_v2 extends AppCompatActivity implements View.OnC
         // Required empty public constructor
     }
 
+    private String convert_time_format(String input) throws ParseException {
+    String pattern = "EEEEE dd MMMMM yyyy";
+    SimpleDateFormat simpleDateFormat =
+            new SimpleDateFormat(pattern, new Locale("en", "PL"));
+
+    Date date = simpleDateFormat.parse(input);
+    return date.toString();
+
+}
+
     boolean validate_reservation_number(EditText reserve) {
 
-        if (txtDate_start.equals(null)) {
+        if (txtDate_start_formatted.equals(null)) {
             return false;
         }
 
 
-        if (txtDate_end.equals(null)) {
+        if (txtDate_end_formatted.equals(null)) {
             return false;
         }
 
-        if (txtTime_start.equals(null)) {
+        if (txtTime_start_formatted.equals(null)) {
 
             return false;
         }
 
 
-        if (txtTime_end.equals(null)) {
+        if (txtTime_end_formatted.equals(null)) {
 
             return false;
         }
@@ -155,11 +167,11 @@ public class Parkingreservation_v2 extends AppCompatActivity implements View.OnC
         btnDatePicker = (Button) findViewById(R.id.btn_end);
         btnTimePicker = (Button) findViewById(R.id.btn_start);
         btnreserve = (Button) findViewById(R.id.btn_reserve);
-        txtDate_start = (EditText) findViewById(R.id.in_start_date);
-        txtTime_start = (EditText) findViewById(R.id.in_start_time);
+        txtDate_start_formatted = (EditText) findViewById(R.id.in_start_date);
+        txtTime_start_formatted = (EditText) findViewById(R.id.in_start_time);
         reserve = (EditText) findViewById(R.id.in_reserve);
-        txtDate_end = (EditText) findViewById(R.id.in_end_date);
-        txtTime_end = (EditText) findViewById(R.id.in_end_time);
+        txtDate_end_formatted = (EditText) findViewById(R.id.in_end_date);
+        txtTime_end_formatted = (EditText) findViewById(R.id.in_end_time);
 
 
         btnDatePicker.setOnClickListener(this);
@@ -182,39 +194,29 @@ public class Parkingreservation_v2 extends AppCompatActivity implements View.OnC
     @SuppressLint("NewApi")
     public void addValue(View v) {
         String name = editTextView.getText().toString();
+        int size = editTextView.getText().toString().length();
         if (name.isEmpty()) {
             Toast.makeText(getApplicationContext(), "Pls enter Values",
                     Toast.LENGTH_SHORT).show();
-        } else {
+        }
 
-            int size = editTextView.getText().toString().length();
-            String plate_number = editTextView.getText().toString();
+        if (size < 6 || size > 10) {
+            Toast.makeText(getApplicationContext(), "Registration plate car number must consist of at least 6 characters and maximum of 10 characters ",
+                    Toast.LENGTH_LONG).show();
+        }
+        if (itemRegistrationplateList.contains(name)) {
+            Toast.makeText(getApplicationContext(), R.string.plate_unique, Toast.LENGTH_LONG).show();
+        }
 
-            if (size < 6 || size > 10) {
-                Toast.makeText(getApplicationContext(), "Registration plate car number must consist of at least 6 characters and maximum of 10 characters ",
-                        Toast.LENGTH_LONG).show();
-            }
-
-            if (!name.matches("[A-Za-z0-9]+")) {
-                Toast.makeText(getApplicationContext(), "Registration plate car number can contain only numbers and letters ", Toast.LENGTH_LONG).show();
-
-            } else {
-
-
-                if (itemRegistrationplateList.contains(plate_number)) {
-                    Toast.makeText(getApplicationContext(), R.string.plate_unique, Toast.LENGTH_LONG).show();
-                } else {
-
+        else {
                     Registration_plate md = new Registration_plate(name);
                     itemRegistrationplateList.add(md);
                     registrationplatelistadapter.notifyDataSetChanged();
                     editTextView.setText("");
-
                 }
-
             }
-        }
-    }
+
+
 
     @Override
     public void onClick(View v) {
@@ -253,7 +255,9 @@ public class Parkingreservation_v2 extends AppCompatActivity implements View.OnC
                                     monthOfYear_string = "0" + monthOfYear_string;
                                 }
 
-                                txtDate_start.setText(year + "-" + monthOfYear_string + "-" + dayOfMonth_string);
+
+
+                                txtDate_start_formatted.setText(year + "-" + monthOfYear_string + "-" + dayOfMonth_string);
 
                             }
                         }, mYear, mMonth, mDay);
@@ -266,7 +270,10 @@ public class Parkingreservation_v2 extends AppCompatActivity implements View.OnC
                 mHour = c.get(Calendar.HOUR_OF_DAY);
                 mMinute = c.get(Calendar.MINUTE);
                 // Launch Time Picker Dialog
-                TimePickerDialog timePickerDialog = new TimePickerDialog(this,
+
+
+
+                TimePickerDialog timePickerDialog = new TimePickerDialog(this,TimePickerDialog.THEME_HOLO_LIGHT,
                         new TimePickerDialog.OnTimeSetListener() {
 
                             @Override
@@ -286,7 +293,7 @@ public class Parkingreservation_v2 extends AppCompatActivity implements View.OnC
                                 }
 
 
-                                txtTime_start.setText(hourOfDay_string + ":" + minute_string);
+                                txtTime_start_formatted.setText(hourOfDay_string + ":" + minute_string);
                             }
                         }, mHour, mMinute, true);
                 START.setHours(mHour);
@@ -344,7 +351,8 @@ public class Parkingreservation_v2 extends AppCompatActivity implements View.OnC
                                     monthOfYear_string = "0" + monthOfYear_string;
                                 }
 
-                                txtDate_end.setText(year + "-" + monthOfYear_string + "-" + dayOfMonth_string);
+                                txtDate_end_formatted.setText(year + "-" + monthOfYear_string + "-" + dayOfMonth_string);
+
                             }
                         }, mYear, mMonth, mDay);
                 datePickerDialog.getDatePicker().setMinDate(c.getTimeInMillis());
@@ -373,7 +381,7 @@ public class Parkingreservation_v2 extends AppCompatActivity implements View.OnC
                                 }
 
 
-                                txtTime_end.setText(hourOfDay_string + ":" + minute_string);
+                                txtTime_end_formatted.setText(hourOfDay_string + ":" + minute_string);
 
 
                             }
@@ -399,8 +407,8 @@ public class Parkingreservation_v2 extends AppCompatActivity implements View.OnC
     }
     public class RegisterTask extends AsyncTask<Void, Void, Boolean> {
 
-        String Date_From = txtDate_start.getText().toString() + "T" + txtTime_start.getText().toString() + ":00Z";
-        String Date_To = txtDate_end.getText().toString() + "T" + txtTime_end.getText().toString() + ":00Z"; //Ad
+        String Date_From = txtDate_start_formatted.getText().toString() + "T" + txtTime_start_formatted.getText().toString() + ":00Z";
+        String Date_To = txtDate_end_formatted.getText().toString() + "T" + txtTime_end_formatted.getText().toString() + ":00Z"; //Ad
 
         SharedPreferences prefs = getSharedPreferences("Token.txt", MODE_PRIVATE);
         String Token = prefs.getString("Token", null);

@@ -23,20 +23,13 @@
 
 
         <ImageView
-            android:id="@+id/item_booking_img_state"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginRight="6dip"
-            android:src="@drawable/ic_check_black_24dp" />
-
-
-        <ImageView
-            android:id="@+id/img_user"
+            android:id="@+id/item_booking_icon_car"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:background="#16000000" />
+            android:layout_gravity="top"
+            android:background="#16000000"
+            android:src="@drawable/icon_car"
+            />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -98,6 +91,16 @@
                 android:text=""
                 android:textColor="#727272"
                 android:textSize="14dp" />
+
+            <TextView
+                android:id="@+id/item_booking_number_of_cars"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text=""
+                android:textColor="#727272"
+                android:textSize="14dp" />
+
 
         </LinearLayout>
 

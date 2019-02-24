@@ -34,6 +34,18 @@ import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.repon
 //import com.magnet.android.mms.MagnetMobileClient;
 //import com.magnet.android.mms.async.Call;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.HTTP;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -176,8 +188,6 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
-
-
 
 
     class GetParking extends AsyncTask<Void, Void, String> {
@@ -401,16 +411,22 @@ public class MainActivity extends AppCompatActivity
             Log.w(TAG, "onNavigationItemSelected: Restartactivity");
 
 
+            SharedPreferences prefs = getSharedPreferences("Token.txt",MODE_PRIVATE);
+            Token = prefs.getString("Token",null);
 
+
+        if(Token!=null)
+        {
 
 
             try {
-                getSupportActionBar().hide();
-                Booking_View_Fragment fragment=new Booking_View_Fragment();
+
+                Booking_View_Fragment fragment = new Booking_View_Fragment();
                 android.support.v4.app.FragmentTransaction fragmentTransaction =
                         getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.fragment_container, fragment);
                 fragmentTransaction.commit();
+                getSupportActionBar().hide();
             } catch (Exception e) {
                 Log.e(getClass().getSimpleName(), "Exception handled", e);
             }
@@ -422,7 +438,11 @@ public class MainActivity extends AppCompatActivity
 //            fragmentTransaction.replace(R.id.fragment_container,fragment);
 //            fragmentTransaction.commit();
 
-
+        }
+        else
+        {
+            Toast.makeText(MainActivity.this, "Please log in to access this section", Toast.LENGTH_SHORT).show();
+        }
 
         } else if (id == R.id.nav_logout) {
 
@@ -463,16 +483,17 @@ public class MainActivity extends AppCompatActivity
                 editor.putString("Email", null);
                 editor.putString("Token", null);
                 editor.putString("User_id", null);
+
                 editor.commit();
             }
-
-            ///przejscie do RestFramgnet
             API.is_Token=false;
+            ///przejscie do RestFramgnet
             Intent myIntent = new Intent(this,LoginActivity.class);
             this.startActivity(myIntent);//to jest wazne
         } else if (id == R.id.nav_tools) {
 
         } else if (id == R.id.nav_share) {
+
 
 
         } else if (id == R.id.nav_send) {

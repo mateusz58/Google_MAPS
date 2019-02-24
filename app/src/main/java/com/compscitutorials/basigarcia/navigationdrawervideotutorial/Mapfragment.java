@@ -1,7 +1,10 @@
 package com.compscitutorials.basigarcia.navigationdrawervideotutorial;
 
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.location.Address;
@@ -9,6 +12,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.util.Log;
@@ -48,10 +52,11 @@ import java.util.Vector;
 
 import retrofit2.Call;
 
+import static android.content.Context.MODE_PRIVATE;
 import static com.compscitutorials.basigarcia.navigationdrawervideotutorial.MainActivity.parking_list;
 
 public class Mapfragment extends Fragment implements GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,View.OnClickListener,SearchView.OnQueryTextListener,GoogleMap.OnMarkerClickListener {
+        GoogleApiClient.OnConnectionFailedListener, View.OnClickListener, SearchView.OnQueryTextListener, GoogleMap.OnMarkerClickListener {
 
     private final String TAG = "Mapfragment";
     Geocoder coder;
@@ -65,6 +70,7 @@ public class Mapfragment extends Fragment implements GoogleApiClient.ConnectionC
     Location mLastLocation;
     GoogleApiClient mGoogleApiClient;
     private Button btnShowLocation;
+//    private FusedLocationProviderClient clinet_location;
 //    private List<Parking> parking_list;
 
 
@@ -76,23 +82,22 @@ public class Mapfragment extends Fragment implements GoogleApiClient.ConnectionC
         Log.i(TAG, "getParkings:started");
         for (int i = 0; i < parking_list.size(); i++) {
 
-            Log.i(TAG, "getParkings X:"+ parking_list.get(i).getX().toString()+"\n");
-            Log.i(TAG, "getParkings Y:"+ parking_list.get(i).getY().toString()+"\n");
-            Log.i(TAG, "getParkings ilosc miejsc:"+ parking_list.get(i).getfree_places().toString()+"\n");
-            String miasto= parking_list.get(i).getparking_City();
-            String Ulica= parking_list.get(i).getparking_Street();
+            Log.i(TAG, "getParkings X:" + parking_list.get(i).getX().toString() + "\n");
+            Log.i(TAG, "getParkings Y:" + parking_list.get(i).getY().toString() + "\n");
+            Log.i(TAG, "getParkings ilosc miejsc:" + parking_list.get(i).getfree_places().toString() + "\n");
+            String miasto = parking_list.get(i).getparking_City();
+            String Ulica = parking_list.get(i).getparking_Street();
 //            String nr_ulicty=parking_list.get(i).getNr_ulicy().toString();
 
             if (parking_list.get(i).getfree_places().equals(0)) {
 
                 MarkerOptions userIndicator = new MarkerOptions()
-                        .position(new LatLng((parking_list.get(i).getX()), parking_list.get(i).getY())).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)).title("City"+miasto + "\nStreet:" + Ulica + " " +"\n " + getResources().getString(R.string.free_places) + "" + parking_list.get(i).getfree_places().toString());
+                        .position(new LatLng((parking_list.get(i).getX()), parking_list.get(i).getY())).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)).title("City" + miasto + "\nStreet:" + Ulica + " " + "\n " + getResources().getString(R.string.free_places) + "" + parking_list.get(i).getfree_places().toString());
                 temp = map.addMarker(userIndicator);
                 markerList.add(temp);
-            }
-            else {
+            } else {
                 MarkerOptions userIndicator = new MarkerOptions()
-                        .position(new LatLng((parking_list.get(i).getX()), parking_list.get(i).getY())).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)).title("City: "+miasto + "\nStreet: " + Ulica + " " +"\n " + getResources().getString(R.string.free_places) + " " + parking_list.get(i).getfree_places().toString());
+                        .position(new LatLng((parking_list.get(i).getX()), parking_list.get(i).getY())).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)).title("City: " + miasto + "\nStreet: " + Ulica + " " + "\n " + getResources().getString(R.string.free_places) + " " + parking_list.get(i).getfree_places().toString());
 
                 userIndicator.snippet(parking_list.get(i).getid().toString());
                 temp = map.addMarker(userIndicator);
@@ -134,16 +139,17 @@ public class Mapfragment extends Fragment implements GoogleApiClient.ConnectionC
             public void onInfoWindowClick(Marker marker) {
                 LatLng latLon = marker.getPosition();
                 Log.i(TAG, "onInfoWindowClick: TRUE");
-                    //Cycle through places array
-                    for (Marker place : markerList) {
-                        if (latLon.equals(place.getPosition())) {
-                            Log.i(TAG, "onInfoWindowClick: ITERATION" + place.getTitle());
-                            if(API.is_Token) {
-                                Intent intent = new Intent(getActivity(), Parkingreservation_v2.class);
-                                Parkingreservation_v2.startActivity(getActivity(), place.getSnippet());
-                            }
+                //Cycle through places array
+                for (Marker place : markerList) {
+                    if (latLon.equals(place.getPosition())) {
+                        Log.i(TAG, "onInfoWindowClick: ITERATION" + place.getTitle());
+                        if (API.is_Token) {
+                            Intent intent = new Intent(getActivity(), Parkingreservation_v2.class);
+                            Parkingreservation_v2.startActivity(getActivity(), place.getSnippet());
+
                         }
                     }
+                }
             }
         });
     }
@@ -179,7 +185,7 @@ public class Mapfragment extends Fragment implements GoogleApiClient.ConnectionC
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 // Do something when collapsed
                 //    Utils.LogDebug("Closed: ");
-                Log.i(TAG, "onMenuItemActionCollapse:"+item);
+                Log.i(TAG, "onMenuItemActionCollapse:" + item);
                 return true;  // Return true to collapse action view
             }
 
@@ -187,7 +193,7 @@ public class Mapfragment extends Fragment implements GoogleApiClient.ConnectionC
             public boolean onMenuItemActionExpand(MenuItem item) {
                 // Do something when expanded
                 //  Utils.LogDebug("Openeed: ");
-                Log.i(TAG, "onMenuItemActionExpand: "+item);
+                Log.i(TAG, "onMenuItemActionExpand: " + item);
                 return true;  // Return true to expand action view
             }
         });
@@ -211,13 +217,13 @@ public class Mapfragment extends Fragment implements GoogleApiClient.ConnectionC
             Toast.makeText(getActivity(), locality, Toast.LENGTH_SHORT).show();
             this.latitude = add.getLatitude();
             this.longitude = add.getLongitude();
-            Log.i(TAG, "onQueryTextSubmit: "+latitude+""+longitude);
+            Log.i(TAG, "onQueryTextSubmit: " + latitude + "" + longitude);
             displayLocation(longitude, latitude);
 
             return true;
         } catch (IOException e) {
             Toast.makeText(getActivity(), "No Results Found", Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "onQueryTextSubmit: "+latitude+""+longitude);
+            Log.e(TAG, "onQueryTextSubmit: " + latitude + "" + longitude);
         }
 
         return false;
@@ -232,10 +238,11 @@ public class Mapfragment extends Fragment implements GoogleApiClient.ConnectionC
         return false;
     }
 
+    ///wyszukiwanie
     private void displayLocation(double longitude, double latitude) {
 
         //marker.remove();
-        Log.i(TAG, "displayLocation: longitude:"+longitude+"latitude"+latitude);
+        Log.i(TAG, "displayLocation: longitude:" + longitude + "latitude" + latitude);
 
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 20);
         map.animateCamera(cameraUpdate);
@@ -248,36 +255,37 @@ public class Mapfragment extends Fragment implements GoogleApiClient.ConnectionC
 
 
     }
-
+    ///wyszukiwanie mojej lokalizacji
     private void display_My_Location() {
 
-        Log.i(TAG, "display_My_Location: longitude:"+longitude+"latitude"+latitude);
-        mLastLocation = LocationServices.FusedLocationApi
-                .getLastLocation(mGoogleApiClient);
+        Log.i(TAG, "display_My_Location: longitude:" + longitude + "latitude" + latitude);
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            mLastLocation = LocationServices.FusedLocationApi
+                    .getLastLocation(mGoogleApiClient);
 
-      Location a;
+            Location a;
 
-
-
-
-        if (mLastLocation != null) {
-            double latitude = mLastLocation.getLatitude();
-            double longitude = mLastLocation.getLongitude();
+            if (mLastLocation != null) {
+                double latitude = mLastLocation.getLatitude();
+                double longitude = mLastLocation.getLongitude();
 
 
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 9);
-            map.animateCamera(cameraUpdate);
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 9);
+                map.animateCamera(cameraUpdate);
 
-            marker = map.addMarker(new MarkerOptions()
-                    .position(new LatLng(latitude, longitude)));
-            marker.setVisible(true);
+                marker = map.addMarker(new MarkerOptions()
+                        .position(new LatLng(latitude, longitude)));
+                marker.setVisible(true);
 
-            Toast.makeText(getActivity(), latitude + ", " + longitude, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), latitude + ", " + longitude, Toast.LENGTH_SHORT).show();
 
-        } else {
+            } else {
 
-            Toast.makeText(getActivity(), R.string.GPRS_error, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), R.string.GPRS_error, Toast.LENGTH_SHORT).show();
+            }
+            return;
         }
+
 
     }
 
@@ -303,7 +311,7 @@ public class Mapfragment extends Fragment implements GoogleApiClient.ConnectionC
                     map = mapView.getMap();
                     map.getUiSettings().setMyLocationButtonEnabled(false);
                     map.getUiSettings().setZoomControlsEnabled(true);
-                    //map.setMyLocationEnabled(true);
+
                     // map.setOnMarkerClickListener((GoogleMap.OnMarkerClickListener) this);
                     //map.setOnInfoWindowClickListener(this);
 
@@ -343,14 +351,6 @@ public class Mapfragment extends Fragment implements GoogleApiClient.ConnectionC
         super.onViewCreated(v, savedInstanceState);
 
 
-
-
-        //  mGoogleApiClient = new GoogleApiClient
-        //          .Builder(getActivity())
-        //          .addApi(Places.GEO_DATA_API)
-        //          .addApi(Places.PLACE_DETECTION_API)
-        //          .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
-        //          .build();
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -426,7 +426,7 @@ public class Mapfragment extends Fragment implements GoogleApiClient.ConnectionC
         Log.i(TAG, "onConnected:Connection success");
 
         try {
-//            display_My_Location();
+            display_My_Location();
         } catch (Exception e) {
             Log.e(getClass().getSimpleName(), "Exception handled", e);
         }

@@ -251,6 +251,10 @@ public class Recycler_List_car extends AppCompatActivity {
             @Override
             public void onChecked(View view, boolean isChecked, int position, Car model) {
 
+
+
+
+
             }
 
         });

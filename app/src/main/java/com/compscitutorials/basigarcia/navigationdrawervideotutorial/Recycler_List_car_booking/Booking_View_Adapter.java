@@ -1,6 +1,7 @@
 package com.compscitutorials.basigarcia.navigationdrawervideotutorial.Recycler_List_car_booking;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,7 +10,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.R;
 import com.compscitutorials.basigarcia.navigationdrawervideotutorial.model.beans.car_booking;
@@ -55,14 +58,30 @@ public class Booking_View_Adapter extends RecyclerView.Adapter<RecyclerView.View
                 final car_booking model = getItem(position);
                 ViewHolder genericViewHolder = (ViewHolder) holder;
 
-    //            private ImageView imgUser;
-    //            private TextView itemTxtTitle;
-    //            private TextView itemTxtMessage;
+                Date start=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(model.getDateFrom().substring(0, 19).replace("T", " "));
+                Date end=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(model.getDateTo().substring(0, 19).replace("T", " "));
 
-    //            genericViewHolder.itemTxtTitle.setText(model.getId().toString());
-    //            genericViewHolder.itemTxtMessage.setText(model.getParkingName());
-    //            genericViewHolder.imgUser.setImageResource(R.drawable.icon_parking);
 
+                genericViewHolder.item_booking_id.setText("Identificator:"+model.getId());
+                genericViewHolder.item_booking_date_from.setText("Start:\n"+start.toGMTString());
+                genericViewHolder.item_booking_date_to.setText("End:\n"+end.toGMTString());
+                genericViewHolder.item_booking_cost.setText("Total Cost:\n "+model.getCost());
+                genericViewHolder.item_booking_number_of_cars.setText("Number of cars:\n "+model.getNumberOfCars());
+
+                genericViewHolder.item_booking_Parking_street_city.setText("Street: "+model.getParkingStreet()+"\n"+
+                                                                            "City: "+model.getParkingCity());
+                if(model.getActive().toString().contains("true"))
+                {
+                    genericViewHolder.itemView.setBackgroundColor(Color.argb(152,152,186,156));
+                    genericViewHolder.item_booking_active.setText("Status: ACTIVE");
+                }
+                else
+                {
+                    genericViewHolder.itemView.setBackgroundColor(Color.argb(100,255,153,153));
+                    genericViewHolder.item_booking_active.setText("Status: INACTIVE");
+                }
+
+//
 
             }
         } catch (Exception e) {
@@ -95,26 +114,30 @@ public class Booking_View_Adapter extends RecyclerView.Adapter<RecyclerView.View
         private TextView itemTxtTitle;
         private TextView itemTxtMessage;
 
+        private TextView item_booking_id;
+        private TextView item_booking_active;
+        private TextView item_booking_cost;
+        private TextView item_booking_date_from;
+        private TextView item_booking_date_to;
+        private TextView item_booking_Parking_street_city;
+        private ImageView item_booking_img_car;
+        private TextView item_booking_number_of_cars;
 
 
-        // @BindView(R.id.img_user)
-        // ImageView imgUser;
-//         @BindView(R.id.item_txt_title)
-//         TextView itemTxtTitle;
-//         @BindView(R.id.item_txt_message)
-//         TextView itemTxtMessage;
-        // @BindView(R.id.radio_list)
-        // RadioButton itemTxtMessage;
-        // @BindView(R.id.check_list)
-        // CheckBox itemCheckList;
         public ViewHolder(final View itemView) {
             super(itemView);
 
             // ButterKnife.bind(this, itemView);
 
-            this.imgUser = (ImageView) itemView.findViewById(R.id.img_user);
-            this.itemTxtTitle = (TextView) itemView.findViewById(R.id.item_booking_id);
-            this.itemTxtMessage = (TextView) itemView.findViewById(R.id.item_txt_message);
+
+            this.item_booking_active = (TextView) itemView.findViewById(R.id.item_booking_active);
+            this.item_booking_id = (TextView) itemView.findViewById(R.id.item_booking_id);
+            this.item_booking_cost = (TextView) itemView.findViewById(R.id.item_booking_cost);
+            this.item_booking_date_from = (TextView) itemView.findViewById(R.id.item_booking_date_from);
+            this.item_booking_date_to = (TextView) itemView.findViewById(R.id.item_booking_date_to);
+            this.item_booking_Parking_street_city = (TextView) itemView.findViewById(R.id.item_booking_Parking_street_city);
+            this.item_booking_img_car = (ImageView) itemView.findViewById(R.id.item_booking_icon_car);
+            this.item_booking_number_of_cars = (TextView) itemView.findViewById(R.id.item_booking_number_of_cars);
 
 
             itemView.setOnClickListener(new View.OnClickListener() {

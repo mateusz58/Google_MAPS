@@ -3,6 +3,7 @@ package com.compscitutorials.basigarcia.navigationdrawervideotutorial;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -198,7 +200,7 @@ boolean validate_reservation_number(EditText reserve)
                     mDay = c.get(Calendar.DAY_OF_MONTH);
 
 ///Launch date and time picker
-                    DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+                    DatePickerDialog datePickerDialog = new DatePickerDialog(this,android.R.style.Theme_Holo_Dialog,
                             new DatePickerDialog.OnDateSetListener() {
 
                                 @Override
@@ -224,7 +226,7 @@ boolean validate_reservation_number(EditText reserve)
 
 
                     // Launch Time Picker Dialog
-                    TimePickerDialog timePickerDialog = new TimePickerDialog(this,
+                    TimePickerDialog timePickerDialog = new TimePickerDialog(this,android.R.style.Theme_Holo_Dialog,
                             new TimePickerDialog.OnTimeSetListener() {
 
                                 @Override

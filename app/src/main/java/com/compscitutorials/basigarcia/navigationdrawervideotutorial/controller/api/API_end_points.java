@@ -20,10 +20,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.Headers;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
@@ -122,19 +125,19 @@ public interface API_end_points {
     Call<Response_Log_out> post_logout(@Header("Authorization") String Token);
 
 
-
-
-
-//////PUT REQUESTS ZMIANA rezerwacji
-
+    //////PUT REQUESTS ZMIANA rezerwacji
     ///Zmiana rezerwacji
-    @FormUrlEncoded
-    @PUT("api/car/logged/{id}")
-    Call<Car> put_car(@Path(value = "{id}", encoded = true) int id,@Header("Authorization") String Token,@Field("status") String status);
+    @GET("api/car/logged/{id}")
+    Call<String> put_car(@Path(value="id") String id,@Header("Authorization") String Token);
 
     @FormUrlEncoded
     @PUT("api/booking/logged/{id}")
-    Call<Booking> put_booking(@Path(value = "{id}", encoded = true) int id,@Header("Authorization") String Token,@Field("active") boolean active);
+    Call<Booking> put_booking(@Path(value = "{id}", encoded = true) String id,@Header("Authorization") String Token);
+
+
+    @GET("api/car/logged")
+    Call<List<Car>> getCar_token_put(@Header("Authorization")String Token,@Header("car-id")String car_id,@Header("booking-id")String booking_id);
+
 
 
 }
