@@ -47,18 +47,20 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
 import pl.parking.app.MainActivity;
 import pl.parking.controller.api.ApiStaticData;
+import pl.parking.exception.ViewException;
 
 public class Mapfragment extends Fragment
         implements GoogleApiClient.ConnectionCallbacks,
-                GoogleApiClient.OnConnectionFailedListener,
-                View.OnClickListener,
-                SearchView.OnQueryTextListener,
-                GoogleMap.OnMarkerClickListener {
+        GoogleApiClient.OnConnectionFailedListener,
+        View.OnClickListener,
+        SearchView.OnQueryTextListener,
+        GoogleMap.OnMarkerClickListener {
 
     private final String TAG = "Mapfragment";
     Geocoder coder;
@@ -113,9 +115,9 @@ public class Mapfragment extends Fragment
                                                 + getResources().getString(R.string.free_places)
                                                 + ""
                                                 + MainActivity.parkingList
-                                                        .get(i)
-                                                        .getFreePlaces()
-                                                        .toString());
+                                                .get(i)
+                                                .getFreePlaces()
+                                                .toString());
                 temp = map.addMarker(userIndicator);
                 markerList.add(temp);
             } else {
@@ -139,9 +141,9 @@ public class Mapfragment extends Fragment
                                                 + getResources().getString(R.string.free_places)
                                                 + ""
                                                 + MainActivity.parkingList
-                                                        .get(i)
-                                                        .getFreePlaces()
-                                                        .toString());
+                                                .get(i)
+                                                .getFreePlaces()
+                                                .toString());
 
                 userIndicator.snippet(MainActivity.parkingList.get(i).getId().toString());
                 temp = map.addMarker(userIndicator);
@@ -252,30 +254,32 @@ public class Mapfragment extends Fragment
     }
 
     @Override
-    public boolean onQueryTextSubmit(String query) {
+    public boolean onQueryTextSubmit(String query) throws ViewException {
+        if (query == null) {
+            throw new IllegalArgumentException("Query cannot be null");
+        }
         Log.i(TAG, "onQueryTextSubmit: " + query);
 
         Geocoder gc = new Geocoder(getContext());
-        List<Address> list = null;
         Log.i(TAG, "onQueryTextSubmit:status ");
 
         try {
-            list = gc.getFromLocationName(query, 1);
-            Address add = list.get(0);
-            String locality = add.getLocality();
-            Toast.makeText(getActivity(), locality, Toast.LENGTH_SHORT).show();
-            this.latitude = add.getLatitude();
-            this.longitude = add.getLongitude();
+            gc.getFromLocationName(query, 1);
+            Toast.makeText(getActivity(), gc.getFromLocationName(query, 1).get(0).getLocality(), Toast.LENGTH_SHORT).show();
+            this.latitude = gc.getFromLocationName(query, 1).get(0).getLatitude();
+            this.longitude = gc.getFromLocationName(query, 1).get(0).getLongitude();
             Log.i(TAG, "onQueryTextSubmit: " + latitude + "" + longitude);
             displayLocation(longitude, latitude);
 
             return true;
-        } catch (IOException e) {
+        } catch (IOException | IndexOutOfBoundsException e) {
             Toast.makeText(getActivity(), "No Results Found", Toast.LENGTH_SHORT).show();
             Log.e(TAG, "onQueryTextSubmit: " + latitude + "" + longitude);
+            throw new ViewException("An error occured during searching for location", e);
         }
-
-        return false;
+        finally{
+            return false;
+        }
     }
 
     @Override
@@ -295,7 +299,6 @@ public class Mapfragment extends Fragment
         marker.setVisible(true);
     }
 
-    @SuppressLint("MissingPermission")
     private void display_My_Location() {
 
         mLocationRequest = new LocationRequest();
@@ -303,6 +306,15 @@ public class Mapfragment extends Fragment
         mLocationRequest.setFastestInterval(1000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
         Location a;

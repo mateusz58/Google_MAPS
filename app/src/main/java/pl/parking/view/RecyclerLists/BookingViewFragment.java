@@ -192,7 +192,6 @@ public class BookingViewFragment extends Fragment {
         } catch (Exception e) {
             Log.e(getClass().getSimpleName(), "Exception handled", e);
         }
-
         return view;
     }
 
