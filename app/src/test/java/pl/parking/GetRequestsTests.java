@@ -25,42 +25,25 @@ import static junit.framework.Assert.assertTrue;
 public class GetRequestsTests {
 
     private static ErrorResponseToken errorResponce;
-    private static List<Car> car_list;
-    private static List<CarBooking> CarBooking_list;
-    private static List<Booking> booking_list;
-    private static String result;
+    private static List<CarBooking> carBookingList;
+    private static List<Booking> bookingList;
+    private static List<Car> carList;
     private final String Token = "Token " + "2aa1eaf23eda36526a56fe47faecf7ac9a30e909";
     private final String Token_fail = "Token " + "47a64c5cff5735dc4d215f4c3601ea5c6344625f";
 
     @Before
-    public void setUp() {}
-
-    @Test
-    public void GET_booking() {
-
-        ApiController apiEndpoints =
-                ParkingService.getRetrofitInstance().create(ApiController.class);
-
-        Call<List<Booking>> call = apiEndpoints.getBookingToken(Token);
-        try {
-
-            Response<List<Booking>> response = call.execute();
-            List<Booking> authResponse = response.body();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void setUp() {
+        bookingList = new ArrayList<>();
     }
 
     @Test
-    public void GET_booking_asynchronous() {
+    public void getBookingTokenMethodShouldReturnAllBookingOfGivenUser() {
         String token = Token;
 
         ApiController apiEndpoints =
                 ParkingService.getRetrofitInstance().create(ApiController.class);
 
         Call<List<Booking>> call = apiEndpoints.getBookingToken(token);
-        booking_list = new ArrayList<Booking>();
         try {
             call.enqueue(
                     new Callback<List<Booking>>() {
@@ -68,7 +51,7 @@ public class GetRequestsTests {
                         public void onResponse(
                                 Call<List<Booking>> call, Response<List<Booking>> response) {
                             if (response.isSuccessful()) {
-                                booking_list = response.body();
+                                bookingList = response.body();
                             } else {
                                 errorResponce = ErrorUtils.parse_Error_Token(response);
                             }
@@ -79,7 +62,7 @@ public class GetRequestsTests {
                     });
             Thread.sleep(1000);
             if (token == Token) {
-                assertTrue(!CarBooking_list.isEmpty());
+                assertTrue(!carBookingList.isEmpty());
             } else {
                 assertTrue(errorResponce.getDetail().contains("Invalid token."));
             }
@@ -89,32 +72,14 @@ public class GetRequestsTests {
     }
 
     @Test
-    public void GET_CarBooking_synchronous() {
-
-        ApiController apiEndpoints =
-                ParkingService.getRetrofitInstance().create(ApiController.class);
-
-        Call<List<CarBooking>> call = apiEndpoints.getCarBookingToken(Token);
-        try {
-            Response<List<CarBooking>> response = call.execute();
-            List<CarBooking> authResponse = response.body();
-            assertTrue(response.isSuccessful());
-            int a = 2;
-
-        } catch (IOException e1) {
-            Log.e(getClass().getSimpleName(), "Exception handled", e1);
-        }
-    }
-
-    @Test
-    public void GET_CarBooking_asynchronous() {
+    public void getCarBookingTokenMethodShouldReturnShouldReturnAllCars() {
         String token = Token;
 
         ApiController apiEndpoints =
                 ParkingService.getRetrofitInstance().create(ApiController.class);
 
         Call<List<CarBooking>> call = apiEndpoints.getCarBookingToken(token);
-        CarBooking_list = new ArrayList<CarBooking>();
+        carBookingList = new ArrayList<CarBooking>();
         try {
             call.enqueue(
                     new Callback<List<CarBooking>>() {
@@ -123,7 +88,7 @@ public class GetRequestsTests {
                                 Call<List<CarBooking>> call,
                                 Response<List<CarBooking>> response) {
                             if (response.isSuccessful()) {
-                                CarBooking_list = response.body();
+                                carBookingList = response.body();
                             } else {
                                 errorResponce = ErrorUtils.parse_Error_Token(response);
                             }
@@ -134,7 +99,7 @@ public class GetRequestsTests {
                     });
             Thread.sleep(1000);
             if (token == Token) {
-                assertTrue(!CarBooking_list.isEmpty());
+                assertTrue(!carBookingList.isEmpty());
             } else {
                 assertTrue(errorResponce.getDetail().contains("Invalid token."));
             }
@@ -145,37 +110,20 @@ public class GetRequestsTests {
     }
 
     @Test
-    public void GET_car_synchronous() {
-
-        ApiController apiEndpoints =
-                ParkingService.getRetrofitInstance().create(ApiController.class);
-
-        Call<List<Car>> call = apiEndpoints.getCarToken(Token);
-        try {
-            Response<List<Car>> response = call.execute();
-            List<Car> authResponse = response.body();
-            assertTrue(response.isSuccessful());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void GET_car_asynchronous_error_handling() {
+    public void getCarTokenShouldReturnAllCarsOfGivenUser() {
 
         String token = Token_fail;
         ApiController apiEndpoints =
                 ParkingService.getRetrofitInstance().create(ApiController.class);
 
         Call<List<Car>> call = apiEndpoints.getCarToken(token);
-        car_list = new ArrayList<Car>();
         try {
             call.enqueue(
                     new Callback<List<Car>>() {
                         @Override
                         public void onResponse(Call<List<Car>> call, Response<List<Car>> response) {
                             if (response.isSuccessful()) {
-                                car_list = response.body();
+                                carList = response.body();
                             } else {
                                 errorResponce = ErrorUtils.parse_Error_Token(response);
                             }
