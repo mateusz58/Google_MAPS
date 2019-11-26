@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.compscitutorials.basigarcia.navigationdrawervideotutorial">
+    package="com.compscitutorials.basigarcia.parkingapp">
 
-    <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
@@ -21,7 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".Recycler_List_Car.Recycler_List_car"
+            android:name="pl.parking.view.RecyclerListCars.RecyclerListCar"
             android:label="@string/title_activity_recycler__list_car"
             android:theme="@style/AppTheme.Template.Base"></activity>
 
@@ -30,7 +28,7 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".LoginActivity"
+            android:name="pl.parking.activity.LoginActivity"
             android:label="@string/title_activity_login"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
@@ -40,7 +38,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Dynamic_list"
+            android:name="pl.parking.view.RegistrationPlateAdapterDynamicList"
             android:label="@string/title_activity_login"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
@@ -50,19 +48,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Parkingreservation"
-            android:label="@string/title_activity_login"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
-            <intent-filter>
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
-
-
-
-        <activity
-            android:name=".Parkingreservation_v2"
+            android:name="pl.parking.activity.ParkingReservation"
             android:label="@string/title_activity_login"
             android:theme="@style/Theme.AppCompat.NoActionBar"
             android:windowSoftInputMode="adjustResize">
@@ -73,7 +59,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SignupActivity"
+            android:name="pl.parking.activity.SignupActivity"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -82,7 +68,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Password_change_Activity"
+            android:name="pl.parking.activity.PasswordChangeActivity"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -91,14 +77,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SplashScreen"
+            android:name="pl.parking.activity.SplashScreen"
             android:label="@string/app_name">
             <intent-filter>
                 <category android:name="android.intent.category.ALTERNATIVE" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name="pl.parking.app.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
@@ -110,11 +96,15 @@
         </activity>
 
         <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".About"
+            android:name="pl.parking.activity.About"
             android:label="@string/title_activity_about"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>

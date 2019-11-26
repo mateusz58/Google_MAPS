@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_alignParentBottom="false"
     android:background="#045b89"
-    tools:context="com.compscitutorials.basigarcia.navigationdrawervideotutorial.Parkingreservation_v2">
+    tools:context="com.compscitutorials.basigarcia.parkingapp.app.compscitutorials.basigarcia.parkingapp.Parkingreservation_v2">
 
 
     <LinearLayout

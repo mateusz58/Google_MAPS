@@ -1,8 +1,6 @@
 <resources>
     <string name="app_name">E-parking</string>
 
-
-
     <!-- Strings related internet and GPS error -->
     <string name="internet_error">Could not obtain data from server make sure you are connected to the internet</string>
     <string name="GPRS_error">Couldn\'t get your localization. Make sure GPS is enabled on the device</string>
@@ -11,7 +9,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
 
-    <string name="confirm_registry">Email not found. You want to create a new user?</string>
+    <string name="confirm_registry">Wrong Email or password. You want to create a new user?</string>
     <string name="confirm_password">Confirm password</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
@@ -84,15 +82,12 @@
 
     <string name="reservation_cancelled">Reservation car with registration plate:"</string>
 
-
-
-
-
-
     <string name="time_locale_language">en</string>
 
     <string name="time_locale_region">UK</string>
 
-
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">
+        AIzaSyA_FPz4laDdhnD1wCz1LO74t-8tq5RWwPw
+    </string>
 
 </resources>

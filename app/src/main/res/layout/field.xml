@@ -10,19 +10,10 @@
         android:layout_gravity="start"
         android:layout_weight="5"
         android:freezesText="true"
-
-
         android:singleLine="true"
         android:textAllCaps="true"
 
         android:inputType="textCapWords"/>
-    <!--<Spinner-->
-        <!--android:id="@+id/type_spinner"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_weight="3"-->
-        <!--android:entries="@array/types"-->
-        <!--android:gravity="right" />-->
     <Button
         android:id="@+id/delete_button"
         android:layout_width="0dp"
