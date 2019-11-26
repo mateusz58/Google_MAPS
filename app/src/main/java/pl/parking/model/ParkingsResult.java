@@ -60,7 +60,6 @@ public class ParkingsResult {
         return Y;
     }
 
-    /** Builder for ParkingsResult */
     public static class _ParkingsResultBuilder {
         private ParkingsResult toBuild = new ParkingsResult();
 
