@@ -6,7 +6,7 @@
 ![js-standard-style](https://img.shields.io/badge/license-MIT-green)
 
 
-<img src="https://i.ibb.co/C8W65x9/Screenshot-6.png" widththe  = 200 align="right" />
+<img src="https://i.ibb.co/C8W65x9/Screenshot-6.png" widththe  = 170 align="right" />
 
 # E-Parking mobile android application
 ## Table ofapplications
@@ -37,13 +37,13 @@ Most notable application features:
 
 ## Technology stack
 
-<img src="httpsvirtualrg/junit4/images/junit5-banner.png" width="200">
-<img src="https://jules-grospeiller.fr/media/logo_competences/lang/json.png" width="200">
-<img src="https://i.ibb.co/J7j05yt/google-Maps.png" width="200">
-<img src="https://i.ibb.co/N2swTHR/okhttp3.png" width="200">
-<img src="https://i.ibb.co/3Tvsqht/retrofit.png" width="200">
-<img src="https://i.ibb.co/nsrX6TN/android.png" width="200">
-<img src="https://idroot.us/wp-content/uploads/2018/11/gradle-logo.png" width="200">
+<img src="httpsvirtualrg/junit4/images/junit5-banner.png" width="170">
+<img src="https://jules-grospeiller.fr/media/logo_competences/lang/json.png" width="170">
+<img src="https://i.ibb.co/J7j05yt/google-Maps.png" width="170">
+<img src="https://i.ibb.co/N2swTHR/okhttp3.png" width="170">
+<img src="https://i.ibb.co/3Tvsqht/retrofit.png" width="170">
+<img src="https://i.ibb.co/nsrX6TN/android.png" width="170">
+<img src="https://idroot.us/wp-content/uploads/2018/11/gradle-logo.png" width="170">
 
 <!-- USAGE EXAMPLES -->
 
