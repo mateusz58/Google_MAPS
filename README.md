@@ -19,7 +19,11 @@
 
 ## About the project
 
-<img src="https://i.ibb.co/DM1w8cB/map.png" width=250><img src="https://i.ibb.co/GTDhbT8/login.png" width=250><img src="https://i.ibb.co/mqV7HZw/reservation-list.png" width=250><img src="https://ibb.co/cL7HbvG.png" width=250><img src="https://i.ibb.co/XYbhdLG/reset.png" width=250><img src="https://i.ibb.co/TLFSKTV/car-reservations.png" width=250>
+<img src="https://i.ibb.co/DM1w8cB/map.png" width=250>
+<img src="https://i.ibb.co/GTDhbT8/login.png" width=250>
+<img src="https://i.ibb.co/mqV7HZw/reservation-list.png" width=250>
+<img src="https://i.ibb.co/XYbhdLG/reset.png" width=250>
+<img src="https://i.ibb.co/TLFSKTV/car-reservations.png" width=250>
 
 Apllication support multiple users which means that user's data regarding its bookings and login informations is stored in database and informations regarding reservations are visible. Aim of the application is to allow user reserve parking space on a chosen parking(parking that has been added to server database). User chooses parking on which he would like to register place by clicking its location(blue marker as shown on above screen) on google map after clicking marker which indicates its location app redirects user to menu on which he is able to determine period of parking space reservation and number of places to reserve. Users need to provde car registration number in order to reserve parking space which serves as identification number for reservations.
 
