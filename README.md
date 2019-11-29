@@ -45,8 +45,6 @@ Most notable application features:
 <img src="https://i.ibb.co/nsrX6TN/android.png" width="170">
 <img src="https://idroot.us/wp-content/uploads/2018/11/gradle-logo.png" width="170">
 
-<!-- USAGE EXAMPLES -->
-
 ## License
 
 [MIT](https://tldrlegal.com/license/mit-license)
