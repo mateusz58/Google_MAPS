@@ -28,17 +28,11 @@ Most notable application features:
 * changing status of reservation
 * booking a reservation for chosen to parking for a limited period
 * ability to search parking on google map by typing its location on search bar
-* it is possible to register more than one parking place at once for many cars on one parking 
+* register more than one parking place at once for many cars on one parking
 
 ## Technology stack
 
-<img src="httpsvirtualrg/junit4/images/junit5-banner.png" width="170">
-<img src="https://jules-grospeiller.fr/media/logo_competences/lang/json.png" width="170">
-<img src="https://i.ibb.co/J7j05yt/google-Maps.png" width="170">
-<img src="https://i.ibb.co/N2swTHR/okhttp3.png" width="170">
-<img src="https://i.ibb.co/3Tvsqht/retrofit.png" width="170">
-<img src="https://i.ibb.co/nsrX6TN/android.png" width="170">
-<img src="https://idroot.us/wp-content/uploads/2018/11/gradle-logo.png" width="170">
+<img src="httpsvirtualrg/junit4/images/junit5-banner.png" width="170"><img src="https://jules-grospeiller.fr/media/logo_competences/lang/json.png" width="170"><img src="https://i.ibb.co/J7j05yt/google-Maps.png" width="170"><img src="https://i.ibb.co/N2swTHR/okhttp3.png" width="170"><img src="https://i.ibb.co/3Tvsqht/retrofit.png" width="170"><img src="https://i.ibb.co/nsrX6TN/android.png" width="170"><img src="https://idroot.us/wp-content/uploads/2018/11/gradle-logo.png" width="170">
 
 ## License
 
