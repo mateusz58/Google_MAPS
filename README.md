@@ -9,13 +9,12 @@
 <img src="https://i.ibb.co/C8W65x9/Screenshot-6.png" widththe  = 170 align="right" />
 
 # E-Parking mobile android application
-## Table ofapplications
-- [E-Parking mobile android application](#e-parking-mobile-android-application)
-  - [Table ofapplications](#table-ofapplications)
-  - [About the project](#about-the-project)
-  - [Technology stack](#technology-stack)
-  - [License](#license)
-  - [Contact](#contact)
+
+  - [Table of content](#table-ofapplications)
+    - [About the project](#about-the-project)
+    - [Technology stack](#technology-stack)
+    - [License](#license)
+    - [Contact](#contact)
 
 ## About the project
 
@@ -29,11 +28,10 @@ Apllication support multiple users which means that user's data regarding its bo
 
 
 Most notable application features:
-* changing status of reservation
-* booking a reservation for chosen to parking for a limited period
-* ability to search parking on google map by typing its location on search bar
-* register more than one parking place at once for many cars on one parking
-
+* changing status of reservation to CANCELLED (its possible only if starting date time of reservation is higher than current)
+* booking a reservation for chosen to parking for the limited period
+* ability to search parking on google map by typing its location on the search bar
+* register more than one parking space at once for many cars on one parking
 ## Technology stack
 
 <img src="httpsvirtualrg/junit4/images/junit5-banner.png" width="170"><img src="https://jules-grospeiller.fr/media/logo_competences/lang/json.png" width="170"><img src="https://i.ibb.co/J7j05yt/google-Maps.png" width="170"><img src="https://i.ibb.co/N2swTHR/okhttp3.png" width="170"><img src="https://i.ibb.co/3Tvsqht/retrofit.png" width="170"><img src="https://i.ibb.co/nsrX6TN/android.png" width="170"><img src="https://idroot.us/wp-content/uploads/2018/11/gradle-logo.png" width="170">
@@ -44,7 +42,6 @@ Most notable application features:
 
 ## Contact
 
-  - Email:  matp321@gmail.com
+  - Email: matp321@gmail.com
 
 - Project Link: [https://github.com/mateusz58/Parking_Server.git](https://github.com/your_username/repo_name)
-
