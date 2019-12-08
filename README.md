@@ -41,4 +41,4 @@ Most notable application features:
 
   - Email: matp321@gmail.com
 
-- Project Link: [https://github.com/mateusz58/Parking_Server.git](https://github.com/your_username/repo_name)
+- Project Link: [https://github.com/mateusz58/Google_MAPS.git](https://github.com/mateusz58/Google_MAPS.git)
